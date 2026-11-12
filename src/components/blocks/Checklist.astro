@@ -1,0 +1,46 @@
+---
+// Heading and checklist: the heading, opening paragraphs and buttons on the left; the bulleted list
+// from the same rich text on the right as ticked boxes. A paragraph right before the list (ending
+// in a colon) becomes the list's lead-in; paragraphs after the list go under it.
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import RichText from "@/components/ui/RichText.astro";
+import Buttons from "@/components/ui/Buttons.astro";
+import Icon from "@/components/ui/Icon.astro";
+import { plain, type PtBlock } from "@/lib/sections";
+
+const { block: b } = Astro.props as { block: Record<string, any> };
+const body = ((b.body ?? []) as PtBlock[]).filter((x) => x._type === "block");
+const firstItem = body.findIndex((x) => x.listItem);
+const before = firstItem < 0 ? body : body.slice(0, firstItem);
+const leadIn = before.length && plain(before.at(-1)!).trim().endsWith(":") ? plain(before.at(-1)!) : "";
+const intro = leadIn ? before.slice(0, -1) : before;
+const items = body.filter((x) => x.listItem).map(plain);
+const lastItem = body.findLastIndex((x) => x.listItem);
+const after = firstItem < 0 ? [] : body.slice(lastItem + 1).filter((x) => !x.listItem);
+const tone = b.tone || "white";
+const id = `h-${b._key}`;
+---
+
+<section class:list={["band", tone, { "on-red": tone === "red" }]} aria-labelledby={id}>
+  <div class="wrap checklist">
+    <div class="lhs">
+      <Eyebrow text={b.eyebrow} />
+      <h2 id={id} class="display h-band">{b.heading}</h2>
+      <RichText value={intro} class="lead" />
+      <Buttons buttons={b.buttons} />
+    </div>
+    {
+      items.length > 0 && (
+        <div>
+          {leadIn && <p class:list={["checks-lead", { long: leadIn.length > 60 }]}>{leadIn}</p>}
+          <ul class="checks">
+            {items.map((t) => (
+              <li><span class="box"><Icon name="check" /></span>{t}</li>
+            ))}
+          </ul>
+          <RichText value={after} class="checks-after" />
+        </div>
+      )
+    }
+  </div>
+</section>

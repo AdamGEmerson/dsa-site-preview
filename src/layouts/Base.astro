@@ -1,0 +1,72 @@
+---
+// Document shell for every public page. EmDash renders the SEO head (description, canonical, robots,
+// Open Graph, Twitter, WebSite JSON-LD), applying the entry's SEO panel over the defaults passed
+// here, and injects its editing toolbar for signed-in editors. We add the Organization and page
+// JSON-LD, fonts, the header and the footer.
+import { Font } from "astro:assets";
+import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
+import WebMcpSearch from "emdash/ui/webmcp-search";
+import { createPublicPageContext } from "emdash/page";
+import "@/styles/global.css";
+import Header from "@/components/shell/Header.astro";
+import Footer from "@/components/shell/Footer.astro";
+import { graph, organization } from "@/lib/schema";
+import { searchCollections, searchRouteMap, useChapter, type PageSeo } from "@/lib/site";
+
+interface Props extends PageSeo {
+  /** The entry being rendered, so EmDash applies its SEO panel and visual editing */
+  content?: { collection: string; id: string; slug?: string | null };
+  /** Page-level JSON-LD nodes; the Organization node is always included */
+  schema?: (Record<string, unknown> | null)[];
+}
+
+const { title, description, canonical, image, robots, content, schema = [] } = Astro.props;
+const site = Astro.site!;
+const chapter = await useChapter(Astro);
+
+const page = createPublicPageContext({
+  Astro,
+  kind: content ? "content" : "custom",
+  pageType: "website",
+  title,
+  pageTitle: title,
+  description: description || undefined,
+  canonical,
+  image,
+  content,
+  seo: { robots: robots ?? null },
+  siteName: chapter.name,
+  siteUrl: site.origin,
+});
+const jsonLd = graph([organization(site, chapter), ...schema.filter((n): n is Record<string, unknown> => Boolean(n))]);
+---
+
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <EmDashHead page={page} />
+    <meta name="theme-color" content="#EC1F27" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-script" preload />
+    <Font cssVariable="--font-body" preload={[{ weight: "400", style: "normal" }]} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <EmDashBodyStart page={page} />
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    {/* Lets AI agents in a visitor's browser search the published pages (WebMCP; a no-op elsewhere) */}
+    <WebMcpSearch collections={searchCollections} routeMap={searchRouteMap} />
+    <EmDashBodyEnd page={page} />
+  </body>
+</html>

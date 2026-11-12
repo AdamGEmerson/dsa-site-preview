@@ -1,0 +1,41 @@
+---
+// A starburst sticker, like an "Act Now" or "Free" sticker slapped on a wall: a jagged burst with
+// an ink edge and a hard shadow, level (the site doesn't tilt things). While the pointer is over the
+// sticker's section the burst spins behind the words; the words and the shadow stay level. Text is
+// one to three short words. tone: "light" (white burst, red text) or "red" (red burst, white text).
+interface Props {
+  text?: string;
+  tone?: "light" | "red";
+  class?: string;
+}
+const { text, tone = "light", class: cls } = Astro.props;
+
+// 22 points, short spikes: a price sticker, not a comic explosion
+const points = 22;
+const outer = 50;
+const inner = 44.5;
+const d =
+  Array.from({ length: points * 2 }, (_, i) => {
+    const r = i % 2 ? inner : outer;
+    const a = (Math.PI * i) / points - Math.PI / 2;
+    return `${i ? "L" : "M"}${(50 + r * Math.cos(a)).toFixed(2)} ${(50 + r * Math.sin(a)).toFixed(2)}`;
+  }).join("") + "Z";
+const words = (text ?? "").trim().split(/\s+/).filter(Boolean);
+---
+
+{
+  words.length > 0 && (
+    <span class:list={["sticker", `sticker-${tone}`, cls]}>
+      <span class="sticker-burst" aria-hidden="true">
+        <svg viewBox="-3 -3 106 106">
+          <path d={d} />
+        </svg>
+      </span>
+      <span class="sticker-text">
+        {words.map((w) => (
+          <span>{w}</span>
+        ))}
+      </span>
+    </span>
+  )
+}

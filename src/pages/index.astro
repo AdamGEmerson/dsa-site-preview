@@ -1,0 +1,21 @@
+---
+// Home (/). Everything on it comes from the "Homepage" entry in the admin; this file is the frame:
+// hero → issue ticker → Page content blocks.
+import Base from "@/layouts/Base.astro";
+import Hero from "@/components/shell/Hero.astro";
+import Ticker from "@/components/shell/Ticker.astro";
+import PageBlocks from "@/components/blocks/PageBlocks.astro";
+import { getEntry, seoFor } from "@/lib/site";
+import { faqPage } from "@/lib/schema";
+
+const entry = await getEntry("homepage", "home");
+if (!entry) return Astro.rewrite("/404");
+const d = entry.data;
+const seo = await seoFor(Astro, entry, "/");
+---
+
+<Base {...seo} content={{ collection: "homepage", id: d.id, slug: d.slug }} schema={[faqPage(d.content)]}>
+  <Hero entry={entry} />
+  <Ticker />
+  <PageBlocks blocks={d.content} edit={entry.edit?.content} />
+</Base>

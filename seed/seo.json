@@ -1,0 +1,29 @@
+{
+  "seo": {
+    "homepage/home": {
+      "title": "Building Socialism Across Tarrant County",
+      "description": "Join DSA Fort Worth and organize for housing, strong unions, economic justice, immigrant rights, and to strengthen democracy across Tarrant County."
+    },
+    "pages/events": {
+      "title": "Events",
+      "description": "Find DSA Fort Worth events, campaign actions, political education, social gatherings, DSA 101 sessions, and chapter meetings across Tarrant County."
+    },
+    "pages/our-work": {
+      "title": "Our Work",
+      "description": "Learn about DSA Fort Worth’s working groups, committees, and campaigns and find ways to get involved."
+    },
+    "pages/about-us": {
+      "title": "About Us",
+      "description": "Learn about DSA Fort Worth, democratic socialism, our political program, chapter history, member-led structure, and organizing efforts across Tarrant County."
+    },
+    "pages/resources": {
+      "title": "Resources",
+      "description": "Read DSA Fort Worth’s bylaws and policies, learn about our candidate endorsement process, and find community organizations and resources."
+    },
+    "pages/join": {
+      "title": "Join DSA",
+      "description": "Join the largest socialist organization in U.S. history and support our chapter by donating."
+    }
+  },
+  "redirects": []
+}

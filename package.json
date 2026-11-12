@@ -1,0 +1,43 @@
+{
+  "name": "dsa-fort-worth-site",
+  "private": true,
+  "type": "module",
+  "description": "DSA Fort Worth website (dsafw.org): Astro + EmDash on Cloudflare Workers",
+  "scripts": {
+    "dev": "astro dev --port 4330",
+    "build": "astro build",
+    "preview": "astro build && wrangler dev",
+    "check": "astro check",
+    "seed": "emdash seed seed/seed.json --validate",
+    "fonts": "nix-shell -p 'python3.withPackages (ps: [ ps.fonttools ps.brotli ])' --run 'python3 scripts/make-anton-slant.py'",
+    "cf-types": "wrangler types",
+    "seo": "EMDASH_URL=${EMDASH_URL:-http://localhost:4330} node scripts/seo.mjs",
+    "photos": "EMDASH_URL=${EMDASH_URL:-http://localhost:4330} node scripts/photos.mjs",
+    "sync-seed": "EMDASH_URL=${EMDASH_URL:-http://localhost:4330} node scripts/sync-seed.mjs",
+    "deploy:preview": "EMDASH_SITE_URL=https://dsa-fort-worth-site.adamgemerson.workers.dev astro build && wrangler deploy --secrets-file .prod.vars",
+    "build-seed": "node scripts/build-seed.mjs && emdash seed seed/seed.json --validate"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^14.4.5",
+    "@astrojs/react": "^7.1.3",
+    "@emdash-cms/cloudflare": "^1.4.0",
+    "astro": "^7.4.4",
+    "emdash": "^1.4.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@cloudflare/workers-types": "^5.20261104.1",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.156.0"
+  },
+  "emdash": {
+    "seed": "seed/seed.json"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "workerd@1.20261101.1": true,
+    "workerd@1.20261104.1": true
+  }
+}

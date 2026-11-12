@@ -1,0 +1,28 @@
+---
+// A CMS photo, or until one is uploaded, a grainy red placeholder showing the shot description.
+import { Image } from "emdash/ui";
+import Icon from "@/assets/brand/logo-icon.svg";
+interface Props {
+  image?: { id?: string; alt?: string } | null;
+  brief?: string;
+  focus?: string;
+  priority?: boolean;
+  sizes?: string;
+  edit?: Record<string, string>;
+}
+const { image, brief, focus, priority = false, sizes = "(min-width: 900px) 45vw, 100vw", edit } = Astro.props;
+const has = Boolean(image && (image as any).id);
+---
+
+{
+  has ? (
+    <Image image={image as any} priority={priority} sizes={sizes} style={focus ? `object-position:${focus}` : undefined} {...edit} />
+  ) : (
+    <div class="placeholder" {...edit}>
+      <div>
+        <Icon aria-hidden="true" role="presentation" />
+        <span>{brief || "Photo to come"}</span>
+      </div>
+    </div>
+  )
+}

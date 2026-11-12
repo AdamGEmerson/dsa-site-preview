@@ -1,0 +1,26 @@
+---
+// Open or closed notice: one boxed message that switches with the Open checkbox, e.g. the
+// endorsement application window. The button shows only while open and only if it has a link.
+import Button from "@/components/ui/Button.astro";
+import InlineMd from "@/components/ui/InlineMd.astro";
+const { block: b } = Astro.props as { block: Record<string, any> };
+const open = Boolean(b.open);
+const heading = open ? b.open_heading : b.closed_heading;
+const text = open ? b.open_text : b.closed_text;
+const id = `h-${b._key}`;
+---
+
+{
+  (heading || text) && (
+    <section class="band paper notice-band" id={b.anchor || undefined} aria-labelledby={heading ? id : undefined}>
+      <div class="wrap">
+        <div class:list={["notice", open ? "is-open" : "is-closed"]}>
+          <p class="notice-status">{open ? "Open now" : "Currently closed"}</p>
+          {heading && <h2 id={id} class="notice-heading">{heading}</h2>}
+          {text && <div class="notice-text"><InlineMd text={text} /></div>}
+          {open && b.button_label && b.button_url && <div class="btn-row"><Button href={b.button_url} label={b.button_label} /></div>}
+        </div>
+      </div>
+    </section>
+  )
+}

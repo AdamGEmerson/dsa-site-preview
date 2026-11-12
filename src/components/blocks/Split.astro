@@ -1,0 +1,26 @@
+---
+// Text and photo: eyebrow, heading, rich text and buttons beside a print, with an optional starburst
+// sticker on its corner ("Free", "Start here").
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import RichText from "@/components/ui/RichText.astro";
+import Buttons from "@/components/ui/Buttons.astro";
+import Photo from "@/components/ui/Photo.astro";
+import Sticker from "@/components/ui/Sticker.astro";
+const { block: b } = Astro.props as { block: Record<string, any> };
+const tone = b.tone || "paper";
+---
+
+<section class:list={["band", tone]} aria-labelledby={`h-${b._key}`}>
+  <div class:list={["wrap split", { "photo-left": b.image_side === "left" }]}>
+    <div>
+      <Eyebrow text={b.eyebrow} />
+      <h2 id={`h-${b._key}`} class="h2">{b.heading}</h2>
+      <RichText value={b.body} />
+      <Buttons buttons={b.buttons} />
+    </div>
+    <figure class="split-photo">
+      <div class="print"><Photo image={b.image} brief={b.image_brief} focus={b.image_focus} /></div>
+      <Sticker text={b.sticker} tone="red" class="photo-sticker" />
+    </figure>
+  </div>
+</section>

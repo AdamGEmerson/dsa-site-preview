@@ -1,0 +1,63 @@
+{
+  "_about": "Sample photos for a fresh local site: `npm run photos` uploads each file in seed/photos/ to the media library and puts it in its slot. Production gets them inside the site package, not from here. Stock photos are from Unsplash (free to use, no attribution required); chapter photos are DSA Fort Worth's own; the -hogue photos are by Hogue, a local photographer. Every file here is resized and stripped of EXIF metadata (GPS, camera) before upload, because EmDash serves the original upload publicly. Full-size originals are kept out of git, in originals/ on the maintainer's machine.",
+  "photos": [
+    {
+      "file": "fort-worth-skyline.jpg",
+      "alt": "Downtown Fort Worth skyline above I-30 and the rail yards",
+      "credit": "Dan Formsma, Unsplash (o-Gdw_a1OI8)",
+      "entry": "homepage/home",
+      "field": "hero_image",
+      "focus": "50% 62%"
+    },
+    {
+      "file": "general-meeting-finns-place.jpg",
+      "alt": "DSA Fort Worth members listening to a speaker at a general meeting at Finn’s Place",
+      "credit": "DSA Fort Worth (chapter photo)",
+      "entry": "homepage/home",
+      "block": "who-we-are",
+      "field": "image",
+      "focus": "50% 55%"
+    },
+    {
+      "file": "data-center-servers.jpg",
+      "alt": "Racks of servers and cables in a data center",
+      "credit": "Taylor Vick, Unsplash (M5tzZtFCOfs)",
+      "entry": "homepage/home",
+      "block": "featured-action",
+      "field": "image"
+    },
+    {
+      "file": "chapter-group-photo.jpg",
+      "alt": "DSA Fort Worth members raising their fists together outside a general meeting",
+      "credit": "DSA Fort Worth (chapter photo)",
+      "entry": "homepage/home",
+      "block": "dsa-101",
+      "field": "image",
+      "focus": "50% 40%"
+    },
+    {
+      "file": "water-gardens-hogue.jpg",
+      "alt": "Water rushing into the Active Pool at the Fort Worth Water Gardens",
+      "credit": "Hogue (local photographer)",
+      "entry": "pages/events",
+      "block": "dsa-101",
+      "field": "image"
+    },
+    {
+      "file": "socialism-beats-fascism-rally.jpg",
+      "alt": "Marchers holding red Socialism Beats Fascism! signs",
+      "credit": "Democratic Socialists of America (NYC DSA signs)",
+      "entry": "pages/join",
+      "block": "donate-form",
+      "field": "image"
+    },
+    {
+      "file": "skyline-hogue.jpg",
+      "alt": "Downtown Fort Worth skyline from the Amon Carter Museum lawn, with Henry Moore’s Upright Motives in the foreground",
+      "credit": "Hogue (local photographer)",
+      "entry": "pages/about-us",
+      "field": "hero_image",
+      "focus": "55% 55%"
+    }
+  ]
+}

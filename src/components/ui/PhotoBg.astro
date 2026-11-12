@@ -1,0 +1,20 @@
+---
+// A full-bleed background photo, duotoned into the band's colour by CSS (grayscale, multiplied
+// into DSA Red or ink). Renders nothing until a photo is chosen.
+import { Image } from "emdash/ui";
+interface Props {
+  image?: { id?: string } | null;
+  focus?: string;
+  priority?: boolean;
+  edit?: Record<string, string>;
+}
+const { image, focus, priority = false, edit } = Astro.props;
+---
+
+{
+  image?.id && (
+    <div class="photo-bg" {...edit}>
+      <Image image={image as any} priority={priority} sizes="100vw" alt="" style={focus ? `object-position:${focus}` : undefined} />
+    </div>
+  )
+}

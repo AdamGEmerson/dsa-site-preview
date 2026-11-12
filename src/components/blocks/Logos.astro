@@ -1,0 +1,55 @@
+---
+// Organization logos: a wall of tiles, each linking to the organization's site or Instagram.
+// A tile without a logo shows the name. Hidden until there's at least one organization.
+import { Image } from "emdash/ui";
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import { isExternal } from "@/lib/site";
+
+type Org = { name: string; logo?: { id?: string; alt?: string }; url?: string; note?: string };
+const { block: b } = Astro.props as { block: Record<string, any> };
+const orgs = ((b.orgs ?? []) as Org[]).filter((o) => o.name);
+const editor = Boolean(Astro.locals.user);
+const id = `h-${b._key}`;
+---
+
+{
+  orgs.length > 0 ? (
+    <section class="band white logos-band" id={b.anchor || undefined} aria-labelledby={id}>
+      <div class="wrap">
+        <div class="band-head">
+          <div>
+            <Eyebrow text={b.eyebrow} />
+            <h2 id={id} class="h2">{b.heading}</h2>
+            {b.intro && <p class="intro">{b.intro}</p>}
+          </div>
+        </div>
+        <ul class="logo-wall">
+          {orgs.map((o) => {
+            const inner = (
+              <>
+                <span class="logo-tile">
+                  {o.logo?.id ? <Image image={o.logo as any} alt={o.logo.alt || o.name} sizes="240px" /> : <span class="logo-name">{o.name}</span>}
+                </span>
+                <span class="logo-caption">
+                  <span class="logo-title">{o.name}</span>
+                  {o.note && <span class="logo-note">{o.note}</span>}
+                </span>
+              </>
+            );
+            return (
+              <li>
+                {o.url ? (
+                  <a class="logo-card" href={o.url} rel={isExternal(o.url) ? "noopener" : undefined}>{inner}</a>
+                ) : (
+                  <div class="logo-card">{inner}</div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+  ) : (
+    editor && <p class="unknown-block">“{b.heading}” is hidden until it lists at least one organization.</p>
+  )
+}

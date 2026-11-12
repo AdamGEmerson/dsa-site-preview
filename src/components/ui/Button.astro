@@ -1,0 +1,20 @@
+---
+// Blocky uppercase action control with the hard offset "stamp". Links off-site are marked for
+// screen readers; everything opens in the same tab.
+import Icon from "./Icon.astro";
+import { isExternal } from "@/lib/site";
+interface Props {
+  href: string;
+  label: string;
+  variant?: string; // "primary" | "secondary"
+  size?: "small";
+  arrow?: boolean;
+  class?: string;
+}
+const { href, label, variant, size, arrow = true, class: cls } = Astro.props;
+const external = isExternal(href);
+---
+
+<a class:list={["btn", variant === "secondary" && "secondary", size, cls]} href={href} rel={external ? "noopener" : undefined}>
+  <span>{label}</span>{arrow && <Icon name="arrow" class="arrow" />}{external && <span class="sr-only"> (opens another site)</span>}
+</a>

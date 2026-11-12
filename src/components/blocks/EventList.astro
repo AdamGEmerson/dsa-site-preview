@@ -1,0 +1,111 @@
+---
+// Event calendar: every upcoming event in the next N days from the feed, grouped by month, with
+// category filter buttons (categories from Chapter details). Without JavaScript all events show.
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import Button from "@/components/ui/Button.astro";
+import EventMeta from "@/components/ui/EventMeta.astro";
+import { formatWhen, type ChapterEvent } from "@/lib/events";
+import { useChapter, useEvents, useSettings } from "@/lib/site";
+
+const { block: b } = Astro.props as { block: Record<string, any> };
+const chapter = await useChapter(Astro);
+const { timezone } = await useSettings(Astro);
+const days = Math.min(365, Math.max(7, Number(b.days) || 90));
+const until = Date.now() + days * 86_400_000;
+const events = (await useEvents(Astro)).filter((e) => e.start.getTime() <= until);
+const months = new Map<string, ChapterEvent[]>();
+for (const e of events) {
+  const key = formatWhen(e, timezone).monthLong;
+  months.set(key, [...(months.get(key) ?? []), e]);
+}
+// Filters in the order the categories are defined, only those with events
+const categories = chapter.eventCategories.map((c) => c.name).filter((n) => events.some((e) => e.category === n));
+const calendarUrl = b.button_url || chapter.calendarUrl;
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+const id = `h-${b._key}`;
+---
+
+<section class="band paper" aria-labelledby={id} id="calendar">
+  <div class="wrap">
+    <div class="band-head">
+      <div>
+        <Eyebrow text={b.eyebrow} />
+        <h2 id={id} class="h2">{b.heading}</h2>
+        {b.intro && <p class="intro">{b.intro}</p>}
+      </div>
+      {calendarUrl && b.button_label && <Button href={calendarUrl} label={b.button_label} variant="secondary" />}
+    </div>
+    {
+      events.length === 0 ? (
+        <div class="events-empty">
+          <span>{b.empty_text}</span>
+        </div>
+      ) : (
+        <div class="agenda" data-agenda>
+          {categories.length > 1 && (
+            <div class="filters" role="group" aria-label="Show events by type" data-filters hidden>
+              <button type="button" class="filter" aria-pressed="true" data-filter="">All</button>
+              {categories.map((c) => (
+                <button type="button" class="filter" aria-pressed="false" data-filter={slug(c)}>{c}</button>
+              ))}
+            </div>
+          )}
+          {[...months].map(([month, list]) => (
+            <section class="agenda-month" data-month>
+              <h3 class="agenda-month-title">{month}</h3>
+              <ol class="agenda-list">
+                {list.map((e) => {
+                  const w = formatWhen(e, timezone);
+                  return (
+                    <li class="agenda-row" data-cat={e.category ? slug(e.category) : ""}>
+                      <time class="date" datetime={w.iso}>
+                        <span class="m">{w.month}</span>
+                        <span class="d">{w.day}</span>
+                        <span class="w">{w.weekday}</span>
+                      </time>
+                      <div class="agenda-main">
+                        <EventMeta event={e} when={w} part="tags" />
+                        <h4>{e.url && !e.membersOnly ? <a href={e.url} rel="noopener">{e.title}</a> : e.title}</h4>
+                        <EventMeta event={e} when={w} part="meta" />
+                        {e.summary && <p>{e.summary}</p>}
+                      </div>
+                      {e.url && !e.membersOnly && <Button href={e.url} label="RSVP" size="small" class="agenda-rsvp" />}
+                    </li>
+                  );
+                })}
+              </ol>
+            </section>
+          ))}
+          <p class="agenda-none" data-none hidden>No events of this type in the next {days} days.</p>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-agenda]").forEach((agenda) => {
+    const filters = agenda.querySelector<HTMLElement>("[data-filters]");
+    if (!filters) return;
+    filters.hidden = false;
+    const none = agenda.querySelector<HTMLElement>("[data-none]")!;
+    filters.addEventListener("click", (event) => {
+      const btn = (event.target as HTMLElement).closest<HTMLButtonElement>("[data-filter]");
+      if (!btn) return;
+      const cat = btn.dataset.filter ?? "";
+      filters.querySelectorAll("[data-filter]").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      let shown = 0;
+      agenda.querySelectorAll<HTMLElement>("[data-month]").forEach((month) => {
+        let inMonth = 0;
+        month.querySelectorAll<HTMLElement>("[data-cat]").forEach((row) => {
+          const show = !cat || row.dataset.cat === cat;
+          row.hidden = !show;
+          if (show) inMonth++;
+        });
+        month.hidden = inMonth === 0;
+        shown += inMonth;
+      });
+      none.hidden = shown > 0;
+    });
+  });
+</script>

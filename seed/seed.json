@@ -1,0 +1,3673 @@
+{
+  "$schema": "https://emdashcms.com/seed.schema.json",
+  "version": "1",
+  "meta": {
+    "name": "DSA Fort Worth",
+    "description": "dsafw.com: schema, block types, sections, menus and the homepage.",
+    "author": "DSA Fort Worth"
+  },
+  "settings": {
+    "title": "DSA Fort Worth",
+    "tagline": "Building Socialism Across Tarrant County",
+    "url": "https://dsafw.com",
+    "timezone": "America/Chicago",
+    "seo": {
+      "titleSeparator": "|"
+    }
+  },
+  "blockTypes": [
+    {
+      "slug": "split",
+      "label": "Text and photo",
+      "description": "Eyebrow, heading, rich text and buttons beside a photo. Paper, white or dark band.",
+      "category": "Sections",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow (the small slanted line above the heading)",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "body",
+              "label": "Text",
+              "type": "portableText"
+            },
+            {
+              "slug": "image",
+              "label": "Photo",
+              "type": "image"
+            },
+            {
+              "slug": "image_brief",
+              "label": "Photo: shot description (shown as a placeholder until there’s a photo)",
+              "type": "string"
+            },
+            {
+              "slug": "image_focus",
+              "label": "Photo: focal point (CSS object-position, e.g. \"50% 30%\")",
+              "type": "string"
+            },
+            {
+              "slug": "image_side",
+              "label": "Photo side",
+              "type": "select",
+              "validation": {
+                "options": [
+                  "right",
+                  "left"
+                ]
+              }
+            },
+            {
+              "slug": "sticker",
+              "label": "Sticker on the photo's corner (optional, one to three short words, e.g. Free)",
+              "type": "string",
+              "validation": {
+                "maxLength": 24
+              }
+            },
+            {
+              "slug": "tone",
+              "label": "Background",
+              "type": "select",
+              "validation": {
+                "options": [
+                  "paper",
+                  "white",
+                  "dark"
+                ]
+              }
+            },
+            {
+              "slug": "buttons",
+              "label": "Buttons",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "label",
+                    "label": "Label",
+                    "type": "string",
+                    "required": true
+                  },
+                  {
+                    "slug": "url",
+                    "label": "Link (a path like /about or a full URL)",
+                    "type": "string",
+                    "required": true
+                  },
+                  {
+                    "slug": "style",
+                    "label": "Style",
+                    "type": "select",
+                    "options": [
+                      "primary",
+                      "secondary"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "callout",
+      "label": "Callout band",
+      "description": "The loud full-width strip: a featured action, a newsletter ask. On red and dark, the eyebrow becomes a starburst sticker (keep it to two or three words). Actions are big ruled links (whole sentences are fine); buttons are short.",
+      "category": "Sections",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "tone",
+              "label": "Colour",
+              "type": "select",
+              "validation": {
+                "options": [
+                  "red",
+                  "dark",
+                  "soft"
+                ]
+              }
+            },
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "body",
+              "label": "Text",
+              "type": "portableText"
+            },
+            {
+              "slug": "image",
+              "label": "Background photo (optional; duotoned into the band colour)",
+              "type": "image"
+            },
+            {
+              "slug": "image_focus",
+              "label": "Background photo: focal point (CSS object-position, e.g. \"50% 30%\")",
+              "type": "string"
+            },
+            {
+              "slug": "actions",
+              "label": "Action links (large rows with an arrow)",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "label",
+                    "label": "Label",
+                    "type": "string",
+                    "required": true
+                  },
+                  {
+                    "slug": "url",
+                    "label": "Link",
+                    "type": "string",
+                    "required": true
+                  }
+                ]
+              }
+            },
+            {
+              "slug": "buttons",
+              "label": "Buttons",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "label",
+                    "label": "Label",
+                    "type": "string",
+                    "required": true
+                  },
+                  {
+                    "slug": "url",
+                    "label": "Link (a path like /about or a full URL)",
+                    "type": "string",
+                    "required": true
+                  },
+                  {
+                    "slug": "style",
+                    "label": "Style",
+                    "type": "select",
+                    "options": [
+                      "primary",
+                      "secondary"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "events",
+      "label": "Upcoming events",
+      "description": "The next events from the chapter calendar (the calendar feed in Chapter details). Past events drop off on their own.",
+      "category": "Automatic",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "intro",
+              "label": "Intro",
+              "type": "text"
+            },
+            {
+              "slug": "count",
+              "label": "How many events (3 to 6)",
+              "type": "integer",
+              "validation": {
+                "min": 3,
+                "max": 6
+              }
+            },
+            {
+              "slug": "button_label",
+              "label": "Button label",
+              "type": "string"
+            },
+            {
+              "slug": "button_url",
+              "label": "Button link",
+              "type": "string"
+            },
+            {
+              "slug": "empty_text",
+              "label": "Shown when no upcoming events are posted",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "featured_events",
+      "label": "Featured events",
+      "description": "A carousel of hand-picked events from the calendar. Paste each event's Solidarity Tech link; past events drop off on their own. With no upcoming picks it shows the next few events instead.",
+      "category": "Automatic",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading (optional)",
+              "type": "string"
+            },
+            {
+              "slug": "picks",
+              "label": "Featured events (Solidarity Tech event links)",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "url",
+                    "label": "Event link, e.g. https://fortworthdsa.solidarity.tech/dsa-101",
+                    "type": "url",
+                    "required": true
+                  }
+                ]
+              }
+            },
+            {
+              "slug": "fallback_count",
+              "label": "When no picks are upcoming, show this many next events (0 hides the carousel)",
+              "type": "integer",
+              "validation": {
+                "min": 0,
+                "max": 8
+              }
+            },
+            {
+              "slug": "banners",
+              "label": "Show each event's banner image from Solidarity Tech",
+              "type": "boolean"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "event_list",
+      "label": "Event calendar",
+      "description": "Every upcoming event from the calendar feed, grouped by month, with category filters (categories come from Chapter details).",
+      "category": "Automatic",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "intro",
+              "label": "Intro",
+              "type": "text"
+            },
+            {
+              "slug": "days",
+              "label": "How far ahead, in days",
+              "type": "integer",
+              "validation": {
+                "min": 7,
+                "max": 365
+              }
+            },
+            {
+              "slug": "button_label",
+              "label": "Button label",
+              "type": "string"
+            },
+            {
+              "slug": "button_url",
+              "label": "Button link",
+              "type": "string"
+            },
+            {
+              "slug": "empty_text",
+              "label": "Shown when no upcoming events are posted",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "groups",
+      "label": "Group list",
+      "description": "Campaigns, working groups or committees: a heading and intro, then one card each. In a card's text, a paragraph that is only a link ([Sign the petition](https://…)) becomes a big action row. Give a card meeting words (e.g. housing working group) and it shows that group's next meeting from the calendar.",
+      "category": "Sections",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "anchor",
+              "label": "Anchor (lets menus link to /page#anchor; lowercase, dashes)",
+              "type": "string",
+              "validation": {
+                "pattern": "^[a-z0-9-]*$"
+              }
+            },
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "intro",
+              "label": "Intro",
+              "type": "portableText"
+            },
+            {
+              "slug": "style",
+              "label": "Layout",
+              "type": "select",
+              "validation": {
+                "options": [
+                  "feature",
+                  "cards"
+                ]
+              }
+            },
+            {
+              "slug": "tone",
+              "label": "Background",
+              "type": "select",
+              "validation": {
+                "options": [
+                  "white",
+                  "paper",
+                  "dark"
+                ]
+              }
+            },
+            {
+              "slug": "items",
+              "label": "Cards",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "heading",
+                    "label": "Name",
+                    "type": "string",
+                    "required": true
+                  },
+                  {
+                    "slug": "body",
+                    "label": "Text (blank line between paragraphs; a paragraph that is only a link becomes an action row)",
+                    "type": "text"
+                  },
+                  {
+                    "slug": "sticker",
+                    "label": "Sticker (optional, one to three words)",
+                    "type": "string"
+                  },
+                  {
+                    "slug": "meeting_match",
+                    "label": "Meeting words from the calendar title (shows the next meeting)",
+                    "type": "string"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "embed_form",
+      "label": "Embedded form",
+      "description": "A Solidarity Tech form (donate, sign up, petition, contact) shown right on the page, beside a heading, text and an optional photo. Paste the form's normal Solidarity Tech link; the page loads its embed version and sizes it to fit.",
+      "category": "Sections",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "anchor",
+              "label": "Anchor (lets links point to /page#anchor; lowercase, dashes)",
+              "type": "string",
+              "validation": {
+                "pattern": "^[a-z0-9-]*$"
+              }
+            },
+            {
+              "slug": "tone",
+              "label": "Background",
+              "type": "select",
+              "validation": {
+                "options": [
+                  "paper",
+                  "white",
+                  "dark"
+                ]
+              }
+            },
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "body",
+              "label": "Text",
+              "type": "portableText"
+            },
+            {
+              "slug": "image",
+              "label": "Photo (optional, under the text)",
+              "type": "image"
+            },
+            {
+              "slug": "image_brief",
+              "label": "Photo (optional, under the text): shot description (shown as a placeholder until there’s a photo)",
+              "type": "string"
+            },
+            {
+              "slug": "image_focus",
+              "label": "Photo (optional, under the text): focal point (CSS object-position, e.g. \"50% 30%\")",
+              "type": "string"
+            },
+            {
+              "slug": "form_url",
+              "label": "Solidarity Tech form link, e.g. https://fortworthdsa.solidarity.tech/donate-to-dsa-fort-worth",
+              "type": "url",
+              "required": true
+            },
+            {
+              "slug": "form_title",
+              "label": "Form name for screen readers, e.g. Donate to DSA Fort Worth",
+              "type": "string"
+            },
+            {
+              "slug": "payments",
+              "label": "Takes payments (allows card and wallet payments inside the form)",
+              "type": "boolean"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "notice",
+      "label": "Open or closed notice",
+      "description": "A boxed notice that switches between two messages, e.g. an application window. Tick Open to show the open message and its button; untick to show the closed message.",
+      "category": "Sections",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "anchor",
+              "label": "Anchor (lowercase, dashes)",
+              "type": "string",
+              "validation": {
+                "pattern": "^[a-z0-9-]*$"
+              }
+            },
+            {
+              "slug": "open",
+              "label": "Open",
+              "type": "boolean"
+            },
+            {
+              "slug": "open_heading",
+              "label": "Heading when open",
+              "type": "string"
+            },
+            {
+              "slug": "open_text",
+              "label": "Text when open (**bold**, [links](https://…))",
+              "type": "text"
+            },
+            {
+              "slug": "button_label",
+              "label": "Button label (when open)",
+              "type": "string"
+            },
+            {
+              "slug": "button_url",
+              "label": "Button link (when open)",
+              "type": "string"
+            },
+            {
+              "slug": "closed_heading",
+              "label": "Heading when closed",
+              "type": "string"
+            },
+            {
+              "slug": "closed_text",
+              "label": "Text when closed (**bold**, [links](https://…))",
+              "type": "text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "logos",
+      "label": "Organization logos",
+      "description": "A wall of organizations, each a logo linked to their website or Instagram. Without a logo the name shows instead. Hidden until it has at least one organization.",
+      "category": "Sections",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "anchor",
+              "label": "Anchor (lowercase, dashes)",
+              "type": "string",
+              "validation": {
+                "pattern": "^[a-z0-9-]*$"
+              }
+            },
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "intro",
+              "label": "Intro",
+              "type": "text"
+            },
+            {
+              "slug": "orgs",
+              "label": "Organizations",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "name",
+                    "label": "Name",
+                    "type": "string",
+                    "required": true
+                  },
+                  {
+                    "slug": "logo",
+                    "label": "Logo (set its alt text to the organization's name)",
+                    "type": "image"
+                  },
+                  {
+                    "slug": "url",
+                    "label": "Website or Instagram link",
+                    "type": "url"
+                  },
+                  {
+                    "slug": "note",
+                    "label": "One line about them (optional)",
+                    "type": "string"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "cards",
+      "label": "Numbered cards",
+      "description": "Three or so steps or options, each with a short heading, a sentence and a button.",
+      "category": "Sections",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "anchor",
+              "label": "Anchor (lets menus link to /page#anchor; lowercase, dashes)",
+              "type": "string",
+              "validation": {
+                "pattern": "^[a-z0-9-]*$"
+              }
+            },
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "intro",
+              "label": "Intro",
+              "type": "text"
+            },
+            {
+              "slug": "items",
+              "label": "Cards",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "heading",
+                    "label": "Heading",
+                    "type": "string",
+                    "required": true
+                  },
+                  {
+                    "slug": "body",
+                    "label": "Text",
+                    "type": "text"
+                  },
+                  {
+                    "slug": "button_label",
+                    "label": "Button label",
+                    "type": "string"
+                  },
+                  {
+                    "slug": "button_url",
+                    "label": "Button link",
+                    "type": "string"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "checklist",
+      "label": "Heading and checklist",
+      "description": "A big heading beside rich text; bulleted lists render as checkmarks.",
+      "category": "Sections",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "tone",
+              "label": "Background",
+              "type": "select",
+              "validation": {
+                "options": [
+                  "white",
+                  "paper",
+                  "red"
+                ]
+              }
+            },
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "body",
+              "label": "Text (use a bulleted list for the checklist)",
+              "type": "portableText"
+            },
+            {
+              "slug": "buttons",
+              "label": "Buttons",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "label",
+                    "label": "Label",
+                    "type": "string",
+                    "required": true
+                  },
+                  {
+                    "slug": "url",
+                    "label": "Link (a path like /about or a full URL)",
+                    "type": "string",
+                    "required": true
+                  },
+                  {
+                    "slug": "style",
+                    "label": "Style",
+                    "type": "select",
+                    "options": [
+                      "primary",
+                      "secondary"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "faq",
+      "label": "FAQ",
+      "description": "Questions and answers, shown as an accordion and published as FAQ structured data. Answers take **bold**, *italic* and [links](https://…).",
+      "category": "Sections",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string"
+            },
+            {
+              "slug": "items",
+              "label": "Questions",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "question",
+                    "label": "Question",
+                    "type": "string",
+                    "required": true
+                  },
+                  {
+                    "slug": "answer",
+                    "label": "Answer (a question without one stays hidden from visitors)",
+                    "type": "text",
+                    "required": false
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "text",
+      "label": "Text",
+      "description": "Eyebrow and heading beside rich text, with optional key figures underneath (e.g. 300+ / members in Tarrant County).",
+      "category": "Sections",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "anchor",
+              "label": "Anchor (lets links point to /page#anchor; lowercase, dashes)",
+              "type": "string",
+              "validation": {
+                "pattern": "^[a-z0-9-]*$"
+              }
+            },
+            {
+              "slug": "tone",
+              "label": "Background",
+              "type": "select",
+              "validation": {
+                "options": [
+                  "white",
+                  "paper",
+                  "dark"
+                ]
+              }
+            },
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string"
+            },
+            {
+              "slug": "body",
+              "label": "Text",
+              "type": "portableText"
+            },
+            {
+              "slug": "stats",
+              "label": "Key figures (optional)",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "figure",
+                    "label": "Figure, e.g. 300+",
+                    "type": "string",
+                    "required": true
+                  },
+                  {
+                    "slug": "label",
+                    "label": "Label, e.g. members in Tarrant County",
+                    "type": "string",
+                    "required": true
+                  }
+                ]
+              }
+            },
+            {
+              "slug": "buttons",
+              "label": "Buttons",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "label",
+                    "label": "Label",
+                    "type": "string",
+                    "required": true
+                  },
+                  {
+                    "slug": "url",
+                    "label": "Link (a path like /about or a full URL)",
+                    "type": "string",
+                    "required": true
+                  },
+                  {
+                    "slug": "style",
+                    "label": "Style",
+                    "type": "select",
+                    "options": [
+                      "primary",
+                      "secondary"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "gallery",
+      "label": "Photo slideshow",
+      "description": "Photos that rotate on their own (visitors can pause or step through). Each needs a photo with alt text describing it, a date and a short caption naming the activity. Hidden from visitors until at least one photo is added.",
+      "category": "Sections",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "slides",
+              "label": "Photos",
+              "type": "repeater",
+              "validation": {
+                "subFields": [
+                  {
+                    "slug": "image",
+                    "label": "Photo (set its alt text: what's in the picture)",
+                    "type": "image"
+                  },
+                  {
+                    "slug": "caption",
+                    "label": "Caption: the activity, e.g. Canvassing for a data center moratorium",
+                    "type": "string"
+                  },
+                  {
+                    "slug": "date",
+                    "label": "Date, e.g. October 2026",
+                    "type": "string"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "contact",
+      "label": "Contact",
+      "description": "How to reach the chapter: rich text on the left (use Heading 3 for each topic), a contact panel on the right with the form button and the email from Chapter details.",
+      "category": "Sections",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading",
+              "type": "string",
+              "required": true
+            },
+            {
+              "slug": "body",
+              "label": "Text (Heading 3 per topic)",
+              "type": "portableText"
+            },
+            {
+              "slug": "form_label",
+              "label": "Form button label",
+              "type": "string"
+            },
+            {
+              "slug": "form_url",
+              "label": "Form link (Solidarity Tech form page)",
+              "type": "url"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "final_cta",
+      "label": "Get involved band",
+      "description": "The site-wide closing call to action. Its wording lives in Sections → “Final call to action”, so one edit changes every page.",
+      "category": "Automatic",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "image",
+              "label": "Background photo (optional; duotoned into red)",
+              "type": "image"
+            },
+            {
+              "slug": "image_focus",
+              "label": "Background photo: focal point (CSS object-position, e.g. \"50% 30%\")",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "collections": [
+    {
+      "slug": "homepage",
+      "label": "Homepage",
+      "labelSingular": "Homepage",
+      "description": "One entry only (slug: home).",
+      "icon": "house",
+      "titleField": "title",
+      "urlPattern": "/",
+      "sortOrder": 1,
+      "supports": [
+        "drafts",
+        "revisions",
+        "preview",
+        "seo"
+      ],
+      "admin": {
+        "quickCreate": false
+      },
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Name (admin only)",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "eyebrow",
+          "label": "Hero eyebrow",
+          "type": "string"
+        },
+        {
+          "slug": "h1",
+          "label": "Headline (H1)",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "lead",
+          "label": "Subtitle (blank line between paragraphs)",
+          "type": "text",
+          "searchable": true
+        },
+        {
+          "slug": "primary_label",
+          "label": "Primary button label",
+          "type": "string"
+        },
+        {
+          "slug": "primary_url",
+          "label": "Primary button link",
+          "type": "string"
+        },
+        {
+          "slug": "secondary_label",
+          "label": "Secondary button label",
+          "type": "string"
+        },
+        {
+          "slug": "secondary_url",
+          "label": "Secondary button link",
+          "type": "string"
+        },
+        {
+          "slug": "hero_image",
+          "label": "Hero photo",
+          "type": "image"
+        },
+        {
+          "slug": "hero_image_brief",
+          "label": "Hero photo: shot description (shown as a placeholder until there’s a photo)",
+          "type": "string"
+        },
+        {
+          "slug": "hero_image_focus",
+          "label": "Hero photo: focal point (CSS object-position, e.g. \"50% 30%\")",
+          "type": "string"
+        },
+        {
+          "slug": "content",
+          "label": "Page content",
+          "type": "blocks",
+          "validation": {
+            "allowedTypes": [
+              "split",
+              "callout",
+              "events",
+              "featured_events",
+              "event_list",
+              "groups",
+              "embed_form",
+              "notice",
+              "logos",
+              "cards",
+              "checklist",
+              "faq",
+              "text",
+              "gallery",
+              "contact",
+              "final_cta"
+            ],
+            "maxItems": 40
+          }
+        }
+      ]
+    },
+    {
+      "slug": "pages",
+      "label": "Pages",
+      "labelSingular": "Page",
+      "description": "About, Events, Our Work, Resources and their sub-pages, at /{slug}.",
+      "icon": "file-text",
+      "titleField": "title",
+      "urlPattern": "/{slug}",
+      "sortOrder": 2,
+      "supports": [
+        "drafts",
+        "revisions",
+        "preview",
+        "seo",
+        "search"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "eyebrow",
+          "label": "Hero eyebrow",
+          "type": "string"
+        },
+        {
+          "slug": "h1",
+          "label": "Headline (H1)",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "lead",
+          "label": "Subtitle (blank line between paragraphs)",
+          "type": "text",
+          "searchable": true
+        },
+        {
+          "slug": "primary_label",
+          "label": "Primary button label",
+          "type": "string"
+        },
+        {
+          "slug": "primary_url",
+          "label": "Primary button link",
+          "type": "string"
+        },
+        {
+          "slug": "secondary_label",
+          "label": "Secondary button label",
+          "type": "string"
+        },
+        {
+          "slug": "secondary_url",
+          "label": "Secondary button link",
+          "type": "string"
+        },
+        {
+          "slug": "hero_image",
+          "label": "Hero photo",
+          "type": "image"
+        },
+        {
+          "slug": "hero_image_brief",
+          "label": "Hero photo: shot description (shown as a placeholder until there’s a photo)",
+          "type": "string"
+        },
+        {
+          "slug": "hero_image_focus",
+          "label": "Hero photo: focal point (CSS object-position, e.g. \"50% 30%\")",
+          "type": "string"
+        },
+        {
+          "slug": "content",
+          "label": "Page content",
+          "type": "blocks",
+          "validation": {
+            "allowedTypes": [
+              "split",
+              "callout",
+              "events",
+              "featured_events",
+              "event_list",
+              "groups",
+              "embed_form",
+              "notice",
+              "logos",
+              "cards",
+              "checklist",
+              "faq",
+              "text",
+              "gallery",
+              "contact",
+              "final_cta"
+            ],
+            "maxItems": 40
+          }
+        }
+      ]
+    },
+    {
+      "slug": "chapter",
+      "label": "Chapter details",
+      "labelSingular": "Chapter details",
+      "description": "One entry (slug: fort-worth). Links and facts used in the header, footer, events and structured data.",
+      "icon": "info",
+      "titleField": "title",
+      "sortOrder": 9,
+      "supports": [
+        "revisions"
+      ],
+      "admin": {
+        "quickCreate": false
+      },
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Chapter name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "area",
+          "label": "Area we organize",
+          "type": "string"
+        },
+        {
+          "slug": "join_url",
+          "label": "Join DSA link",
+          "type": "url"
+        },
+        {
+          "slug": "get_involved_url",
+          "label": "Get Involved form link",
+          "type": "url"
+        },
+        {
+          "slug": "newsletter_url",
+          "label": "Newsletter signup link",
+          "type": "url"
+        },
+        {
+          "slug": "calendar_url",
+          "label": "Full calendar page",
+          "type": "url"
+        },
+        {
+          "slug": "calendar_ics_url",
+          "label": "Calendar feed (.ics) from Solidarity Tech: Settings → Chapter Structure → Calendar Subscription",
+          "type": "url"
+        },
+        {
+          "slug": "dsa_101_url",
+          "label": "DSA 101 RSVP link",
+          "type": "url"
+        },
+        {
+          "slug": "donate_url",
+          "label": "Donate link",
+          "type": "url"
+        },
+        {
+          "slug": "email",
+          "label": "Contact email",
+          "type": "string"
+        },
+        {
+          "slug": "event_categories",
+          "label": "Event categories (the feed has none, so events are tagged by words in their titles; first match wins)",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "name",
+                "label": "Category",
+                "type": "string",
+                "required": true
+              },
+              {
+                "slug": "keywords",
+                "label": "Title words, comma-separated (e.g. canvass, petition)",
+                "type": "text",
+                "required": true
+              },
+              {
+                "slug": "members_only",
+                "label": "Members only (badge, no RSVP button, no address)",
+                "type": "boolean"
+              }
+            ]
+          }
+        },
+        {
+          "slug": "social",
+          "label": "Social accounts",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "network",
+                "label": "Network",
+                "type": "select",
+                "options": [
+                  "instagram",
+                  "facebook",
+                  "x",
+                  "bluesky",
+                  "tiktok",
+                  "youtube",
+                  "threads"
+                ]
+              },
+              {
+                "slug": "url",
+                "label": "Profile link",
+                "type": "url",
+                "required": true
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "slug": "final-cta",
+      "title": "Final call to action",
+      "description": "The closing “Get involved” band (add it to a page with the Get involved band block). Heading 2 = headline. Paragraphs = text. A paragraph that is only a link becomes a button: the first is the primary button, the rest secondary.",
+      "keywords": [
+        "cta",
+        "join",
+        "get involved",
+        "global"
+      ],
+      "source": "theme",
+      "content": [
+        {
+          "_type": "block",
+          "_key": "b1",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "s2",
+              "text": "Help Build a Better World For Tarrant County",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "b3",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "s4",
+              "text": "No matter how you want to make a difference, you have a place in this work. Tell us what you care about, and we’ll help connect you to work that matters.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "b5",
+          "style": "normal",
+          "markDefs": [
+            {
+              "_type": "link",
+              "_key": "l6",
+              "href": "https://fortworthdsa.solidarity.tech/get-involved-with-dsa-fort-worth"
+            }
+          ],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "s7",
+              "text": "Get Involved",
+              "marks": [
+                "l6"
+              ]
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "b8",
+          "style": "normal",
+          "markDefs": [
+            {
+              "_type": "link",
+              "_key": "l9",
+              "href": "https://go.dsausa.org/fort-worth-f26"
+            }
+          ],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "sa",
+              "text": "Join DSA",
+              "marks": [
+                "l9"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "issue-ticker",
+      "title": "Issue ticker",
+      "description": "The scrolling strip under the homepage hero. One short issue per bullet.",
+      "keywords": [
+        "ticker",
+        "issues",
+        "global"
+      ],
+      "source": "theme",
+      "content": [
+        {
+          "_type": "block",
+          "_key": "bb",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "sc",
+              "text": "Housing",
+              "marks": []
+            }
+          ],
+          "listItem": "bullet",
+          "level": 1
+        },
+        {
+          "_type": "block",
+          "_key": "bd",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "se",
+              "text": "Healthcare",
+              "marks": []
+            }
+          ],
+          "listItem": "bullet",
+          "level": 1
+        },
+        {
+          "_type": "block",
+          "_key": "bf",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "sg",
+              "text": "Strong Unions",
+              "marks": []
+            }
+          ],
+          "listItem": "bullet",
+          "level": 1
+        },
+        {
+          "_type": "block",
+          "_key": "bh",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "si",
+              "text": "Economic Justice",
+              "marks": []
+            }
+          ],
+          "listItem": "bullet",
+          "level": 1
+        },
+        {
+          "_type": "block",
+          "_key": "bj",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "sk",
+              "text": "Immigrant Rights",
+              "marks": []
+            }
+          ],
+          "listItem": "bullet",
+          "level": 1
+        },
+        {
+          "_type": "block",
+          "_key": "bl",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "sm",
+              "text": "Democracy",
+              "marks": []
+            }
+          ],
+          "listItem": "bullet",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "slug": "not-found",
+      "title": "Page not found",
+      "description": "The 404 page (shown for any address with no page, including pages not built yet). Heading 2 = headline. Paragraphs = text. A paragraph that is only a link becomes a button.",
+      "keywords": [
+        "404",
+        "not found",
+        "global"
+      ],
+      "source": "theme",
+      "content": [
+        {
+          "_type": "block",
+          "_key": "bn",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "so",
+              "text": "Pardon Our Mess",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "bp",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "sq",
+              "text": "We’re currently revolutionizing our web presence.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "br",
+          "style": "normal",
+          "markDefs": [
+            {
+              "_type": "link",
+              "_key": "ls",
+              "href": "/"
+            }
+          ],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "st",
+              "text": "Back to Home",
+              "marks": [
+                "ls"
+              ]
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "bu",
+          "style": "normal",
+          "markDefs": [
+            {
+              "_type": "link",
+              "_key": "lv",
+              "href": "/events"
+            }
+          ],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "sw",
+              "text": "Upcoming Events",
+              "marks": [
+                "lv"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "footer",
+      "title": "Footer",
+      "description": "Footer wording. First paragraph: the line under the logo. Second paragraph: the sign-off at the bottom right.",
+      "keywords": [
+        "footer",
+        "global"
+      ],
+      "source": "theme",
+      "content": [
+        {
+          "_type": "block",
+          "_key": "bx",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "sy",
+              "text": "Tarrant County’s democratic socialists. Member-funded, member-led.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "bz",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "s10",
+              "text": "No one is free until we are all free.",
+              "marks": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "menus": [
+    {
+      "name": "primary",
+      "label": "Header",
+      "items": [
+        {
+          "type": "custom",
+          "label": "Events",
+          "url": "/events"
+        },
+        {
+          "type": "custom",
+          "label": "About Us",
+          "url": "/about-us"
+        },
+        {
+          "type": "custom",
+          "label": "Our Work",
+          "url": "/our-work",
+          "children": [
+            {
+              "type": "custom",
+              "label": "Campaigns",
+              "url": "/our-work#campaigns"
+            },
+            {
+              "type": "custom",
+              "label": "Working Groups",
+              "url": "/our-work#working-groups"
+            },
+            {
+              "type": "custom",
+              "label": "Committees",
+              "url": "/our-work#committees"
+            }
+          ]
+        },
+        {
+          "type": "custom",
+          "label": "Resources",
+          "url": "/resources",
+          "children": [
+            {
+              "type": "custom",
+              "label": "Bylaws",
+              "url": "/resources#bylaws"
+            },
+            {
+              "type": "custom",
+              "label": "Endorsements",
+              "url": "/resources#endorsements"
+            },
+            {
+              "type": "custom",
+              "label": "Chapter Structure",
+              "url": "/about-us#how-our-chapter-works"
+            },
+            {
+              "type": "custom",
+              "label": "Code of Conduct",
+              "url": "/resources#code-of-conduct"
+            },
+            {
+              "type": "custom",
+              "label": "Donate",
+              "url": "/join#donate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "footer_organize",
+      "label": "Footer: Organize",
+      "items": [
+        {
+          "type": "custom",
+          "label": "Events",
+          "url": "/events"
+        },
+        {
+          "type": "custom",
+          "label": "Campaigns",
+          "url": "/our-work#campaigns"
+        },
+        {
+          "type": "custom",
+          "label": "Working Groups",
+          "url": "/our-work#working-groups"
+        },
+        {
+          "type": "custom",
+          "label": "Committees",
+          "url": "/our-work#committees"
+        }
+      ]
+    },
+    {
+      "name": "footer_learn",
+      "label": "Footer: Learn",
+      "items": [
+        {
+          "type": "custom",
+          "label": "About Us",
+          "url": "/about-us"
+        },
+        {
+          "type": "custom",
+          "label": "Our Work",
+          "url": "/our-work"
+        },
+        {
+          "type": "custom",
+          "label": "Resources",
+          "url": "/resources"
+        },
+        {
+          "type": "custom",
+          "label": "DSA 101",
+          "url": "https://fortworthdsa.solidarity.tech/dsa-101"
+        }
+      ]
+    },
+    {
+      "name": "footer_connect",
+      "label": "Footer: Connect",
+      "items": [
+        {
+          "type": "custom",
+          "label": "Join DSA",
+          "url": "/join"
+        },
+        {
+          "type": "custom",
+          "label": "Get Involved",
+          "url": "https://fortworthdsa.solidarity.tech/get-involved-with-dsa-fort-worth"
+        },
+        {
+          "type": "custom",
+          "label": "Newsletter",
+          "url": "https://fortworthdsa.solidarity.tech/subscribe-to-our-newsletter"
+        },
+        {
+          "type": "custom",
+          "label": "Full Calendar",
+          "url": "https://fortworthdsa.solidarity.tech/dsa-fort-worth-calendar"
+        }
+      ]
+    }
+  ],
+  "content": {
+    "homepage": [
+      {
+        "id": "homepage-home",
+        "slug": "home",
+        "status": "published",
+        "data": {
+          "title": "Home",
+          "eyebrow": "Democratic Socialists of America - Tarrant County",
+          "h1": "Building Socialism Across Tarrant County",
+          "lead": "DSA Fort Worth brings working-class people together to fight for economic justice, strengthen democracy, and create a Tarrant County where everyone can live with dignity.",
+          "primary_label": "Join DSA",
+          "primary_url": "https://go.dsausa.org/fort-worth-f26",
+          "secondary_label": "Get Involved",
+          "secondary_url": "https://fortworthdsa.solidarity.tech/get-involved-with-dsa-fort-worth",
+          "hero_image_brief": "Members and neighbors rallying in Fort Worth, signs up",
+          "content": [
+            {
+              "_type": "split",
+              "_version": 1,
+              "_key": "who-we-are",
+              "eyebrow": "Who We Are",
+              "heading": "Building Working-Class Power",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b11",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s12",
+                      "text": "DSA Fort Worth is a member-funded, member-driven organization building working-class power across Tarrant County. Our work is shaped and funded by everyday people and not corporations or wealthy donors. Members help decide our priorities, elect chapter leaders, develop campaigns, and carry out the work necessary to win change.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b13",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s14",
+                      "text": "We organize for economic justice by championing housing, healthcare, strong unions, and public institutions that meet people’s needs. Our politics are anti-imperialist because we believe every person, everywhere, has the right to live a free, humane, and dignified life.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b15",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s16",
+                      "text": "We believe people are capable of making the decisions that affect their workplaces, neighborhoods, communities, and government. By organizing together, we can build a more democratic society and economy that works for everyone.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "image_brief": "Members at a general meeting at Finn’s Place",
+              "image_side": "right",
+              "tone": "paper",
+              "buttons": [
+                {
+                  "label": "Learn About DSA Fort Worth",
+                  "url": "/about-us",
+                  "style": "secondary"
+                }
+              ]
+            },
+            {
+              "_type": "callout",
+              "_version": 1,
+              "_key": "featured-action",
+              "tone": "red",
+              "eyebrow": "Featured Action",
+              "heading": "Help Stop Data Center Expansion in Fort Worth",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b17",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s18",
+                      "text": "Data centers are expanding across Fort Worth, consuming our water and energy while polluting our environment. DSA Fort Worth is organizing residents to push Fort Worth City Council to adopt a moratorium on new data center developments.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "label": "Sign the petition to demand a stop to new data center development in Fort Worth",
+                  "url": "https://fortworthdsa.solidarity.tech/stop-data-center-development-in-fort-worth"
+                },
+                {
+                  "label": "Join an upcoming canvass to take action with DSA",
+                  "url": "https://fortworthdsa.solidarity.tech/no-data-centers-in-fort-worth-canvass-for-a-moratorium?event_session_ids=97013"
+                }
+              ],
+              "buttons": []
+            },
+            {
+              "_type": "events",
+              "_version": 1,
+              "_key": "upcoming-events",
+              "eyebrow": "Upcoming Events",
+              "heading": "Organize, Learn, and Build Community",
+              "intro": "From campaign actions and political education to chapter meetings and social events, there are plenty of ways to meet local organizers and get involved with DSA Fort Worth.",
+              "count": 6,
+              "button_label": "View Full Calendar",
+              "button_url": "/events",
+              "empty_text": "New events are posted every week. Check the full calendar."
+            },
+            {
+              "_type": "split",
+              "_version": 1,
+              "_key": "dsa-101",
+              "eyebrow": "DSA Fort Worth 101",
+              "heading": "New to DSA Fort Worth? Start Here.",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b19",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s1a",
+                      "text": "DSA Fort Worth 101 introduces you to democratic socialism, our chapter, and the work we’re doing across Tarrant County. You’ll learn how DSA operates as a member-led organization, how our chapter makes decisions, and how members and supporters can get involved in campaigns, working groups, committees, events, and political education.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b1b",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s1c",
+                      "text": "Whether you are ready to join or simply curious about DSA, this session will help you understand who we are and find your place in the chapter.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "image_brief": "Comrades at a DSA 101 session",
+              "image_side": "left",
+              "sticker": "Come Say Hi!",
+              "tone": "dark",
+              "buttons": [
+                {
+                  "label": "Attend DSA 101",
+                  "url": "https://fortworthdsa.solidarity.tech/dsa-101",
+                  "style": "primary"
+                }
+              ]
+            },
+            {
+              "_type": "cards",
+              "_version": 1,
+              "_key": "get-involved",
+              "eyebrow": "Ways to Get Involved",
+              "heading": "Get Involved, Stay Connected",
+              "intro": "Ready to make a difference in Tarrant County? Below are a few ways you can plug in and get involved.",
+              "items": [
+                {
+                  "heading": "Join DSA",
+                  "body": "Become a dues-paying member and help shape the priorities, leadership, and work of your local DSA chapter.",
+                  "button_label": "Become a Member",
+                  "button_url": "https://go.dsausa.org/fort-worth-f26"
+                },
+                {
+                  "heading": "Attend an Upcoming Event",
+                  "body": "Meet local organizers through campaign actions, political education, chapter meetings, and community events.",
+                  "button_label": "Explore Upcoming Events",
+                  "button_url": "/events"
+                },
+                {
+                  "heading": "Find Your Place",
+                  "body": "Tell us about your interests, skills, and availability. We’ll help connect you with a campaign, working group, committee, or upcoming opportunity.",
+                  "button_label": "Fill Out the Get Involved Form",
+                  "button_url": "https://fortworthdsa.solidarity.tech/get-involved-with-dsa-fort-worth"
+                }
+              ]
+            },
+            {
+              "_type": "checklist",
+              "_version": 1,
+              "_key": "why-join",
+              "tone": "white",
+              "eyebrow": "Why Join DSA?",
+              "heading": "Join the Largest, Socialist Organization in U.S. History",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b1d",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s1e",
+                      "text": "Our power comes from people choosing to organize together. When you join DSA, you become part of shaping what our chapter does and what we can accomplish across Tarrant County.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b1f",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s1g",
+                      "text": "As a member of DSA Fort Worth, you can:",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b1h",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s1i",
+                      "text": "Propose new projects and areas of work",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b1j",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s1k",
+                      "text": "Vote on chapter priorities, resolutions, endorsements, and leadership",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b1l",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s1m",
+                      "text": "Help develop campaigns and organizing strategies",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b1n",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s1o",
+                      "text": "Join working groups and committees",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b1p",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s1q",
+                      "text": "Build organizing efforts, communications, research, and leadership skills",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b1r",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s1s",
+                      "text": "Organize alongside people committed to working to build socialism in our community",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                }
+              ],
+              "buttons": [
+                {
+                  "label": "Join DSA",
+                  "url": "https://go.dsausa.org/fort-worth-f26",
+                  "style": "primary"
+                },
+                {
+                  "label": "Attend DSA 101 to Learn More",
+                  "url": "https://fortworthdsa.solidarity.tech/dsa-101",
+                  "style": "secondary"
+                }
+              ]
+            },
+            {
+              "_type": "callout",
+              "_version": 1,
+              "_key": "newsletter",
+              "tone": "soft",
+              "eyebrow": "Newsletter Signup",
+              "heading": "Know What’s Happening. Be Ready to Act.",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b1t",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s1u",
+                      "text": "Decisions affecting our neighborhoods, workplaces, public resources, and rights can move quickly. Subscribe to the DSA Fort Worth newsletter for local campaign updates, upcoming events, political education, community resources, and opportunities to take action.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "actions": [],
+              "buttons": [
+                {
+                  "label": "Sign Up for Updates",
+                  "url": "https://fortworthdsa.solidarity.tech/subscribe-to-our-newsletter",
+                  "style": "primary"
+                }
+              ]
+            },
+            {
+              "_type": "final_cta",
+              "_version": 1,
+              "_key": "final-cta"
+            },
+            {
+              "_type": "faq",
+              "_version": 1,
+              "_key": "faq",
+              "heading": "Frequently Asked Questions",
+              "items": [
+                {
+                  "question": "What is DSA?",
+                  "answer": "The Democratic Socialists of America is a member-funded, member-led political organization. DSA members organize in their workplaces, communities, and political institutions to build a society and economy that meets people’s needs democratically. [Democratic Socialists of America →](https://www.dsausa.org/)"
+                },
+                {
+                  "question": "What does DSA Fort Worth do?",
+                  "answer": "DSA Fort Worth organizes people across Tarrant County through campaigns, working groups, community events, and other forms of collective action. Our priorities and activities are determined by our members."
+                },
+                {
+                  "question": "How do I join DSA Fort Worth?",
+                  "answer": "Join DSA through [go.dsausa.org/fort-worth-f26](https://go.dsausa.org/fort-worth-f26). After joining the national organization, your membership information will be shared with the local chapter through regular membership updates."
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "pages": [
+      {
+        "id": "pages-events",
+        "slug": "events",
+        "status": "published",
+        "data": {
+          "title": "Events",
+          "eyebrow": "Events",
+          "h1": "Organize, Learn, and Build Community",
+          "lead": "DSA Fort Worth hosts campaign actions, political education, chapter meetings, and social events throughout Tarrant County. Whether you are a longtime member or learning about DSA for the first time, our events offer a way to meet local organizers, explore socialist politics, and find your place in the chapter.",
+          "primary_label": "View Upcoming Events",
+          "primary_url": "https://fortworthdsa.solidarity.tech/dsa-fort-worth-calendar",
+          "hero_image_brief": "Members at a chapter event",
+          "content": [
+            {
+              "_type": "featured_events",
+              "_version": 1,
+              "_key": "featured-events",
+              "eyebrow": "Featured Events",
+              "heading": "",
+              "picks": [
+                {
+                  "url": "https://fortworthdsa.solidarity.tech/dsa-101"
+                },
+                {
+                  "url": "https://fortworthdsa.solidarity.tech/coffee-with-comrades"
+                },
+                {
+                  "url": "https://fortworthdsa.solidarity.tech/rose-buddy-mentorship-program-graduation-celebration"
+                }
+              ],
+              "fallback_count": 4,
+              "banners": true
+            },
+            {
+              "_type": "event_list",
+              "_version": 1,
+              "_key": "event-calendar",
+              "eyebrow": "Upcoming Events Calendar",
+              "heading": "Find an Upcoming Event",
+              "intro": "From campaign actions and political education to chapter meetings and social events, there are plenty of ways to meet local organizers and get involved with DSA Fort Worth.",
+              "days": 90,
+              "button_label": "View Full Calendar",
+              "button_url": "https://fortworthdsa.solidarity.tech/dsa-fort-worth-calendar",
+              "empty_text": "New events are posted every week. Check the full calendar."
+            },
+            {
+              "_type": "split",
+              "_version": 1,
+              "_key": "dsa-101",
+              "eyebrow": "DSA Fort Worth 101",
+              "heading": "New to DSA? Start Here.",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b1v",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s1w",
+                      "text": "DSA Fort Worth 101 introduces you to democratic socialism, our chapter, and the work we are building across Tarrant County.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b1x",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s1y",
+                      "text": "During the session, you will learn:",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b1z",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s20",
+                      "text": "What DSA is and what democratic socialists believe",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b21",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s22",
+                      "text": "How DSA Fort Worth is organized",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b23",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s24",
+                      "text": "How members make chapter decisions",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b25",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s26",
+                      "text": "What our campaigns, working groups, and committees do",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b27",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s28",
+                      "text": "How to join DSA and become active",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b29",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s2a",
+                      "text": "You do not need to be a member or have previous organizing experience to attend.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "image_brief": "Comrades at a DSA 101 session",
+              "image_side": "left",
+              "tone": "dark",
+              "sticker": "Come Say Hi!",
+              "buttons": [
+                {
+                  "label": "Attend DSA 101",
+                  "url": "https://fortworthdsa.solidarity.tech/dsa-101",
+                  "style": "primary"
+                }
+              ]
+            },
+            {
+              "_type": "final_cta",
+              "_version": 1,
+              "_key": "final-cta"
+            },
+            {
+              "_type": "faq",
+              "_version": 1,
+              "_key": "faq",
+              "heading": "Frequently Asked Questions",
+              "items": [
+                {
+                  "question": "Do I have to be a member to attend events?",
+                  "answer": "Many DSA Fort Worth events and activities are open to non-members. Certain votes, elections, meetings, and internal activities are limited to members in good standing."
+                },
+                {
+                  "question": "Does DSA do social events outside of chapter meetings?"
+                },
+                {
+                  "question": "What types of political education events are available?"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "pages-our-work",
+        "slug": "our-work",
+        "status": "published",
+        "data": {
+          "title": "Our Work",
+          "eyebrow": "Our Work",
+          "h1": "What We Do",
+          "lead": "DSA Fort Worth members are organizing across Tarrant County. Our chapter’s campaigns and initiatives fight for lasting change in our communities and work to build working-class power.",
+          "primary_label": "Get Involved",
+          "primary_url": "https://fortworthdsa.solidarity.tech/get-involved-with-dsa-fort-worth",
+          "secondary_label": "View Upcoming Events",
+          "secondary_url": "https://fortworthdsa.solidarity.tech/dsa-fort-worth-calendar",
+          "hero_image_brief": "Members canvassing a Fort Worth neighborhood",
+          "content": [
+            {
+              "_type": "groups",
+              "_version": 1,
+              "_key": "campaigns",
+              "anchor": "campaigns",
+              "eyebrow": "Campaigns",
+              "heading": "Turning Our Vision Into Action",
+              "intro": [
+                {
+                  "_type": "block",
+                  "_key": "b2b",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s2c",
+                      "text": "Campaigns are chapter-wide efforts meant to achieve a specific political or organizing goal. They give members and community supporters a way to transform shared concerns into collective power through research, political education, canvassing, public pressure, coalition work, and direct action.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b2d",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s2e",
+                      "text": "Our campaigns address immediate conditions while building the relationships, skills, and organizational power needed to fight for a more democratic and socialist future.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "style": "feature",
+              "tone": "paper",
+              "items": [
+                {
+                  "heading": "No More Data Centers in Fort Worth",
+                  "body": "Data centers are expanding across Fort Worth, consuming our water and energy while polluting our environment. DSA Fort Worth is organizing residents to push Fort Worth City Council to adopt a moratorium on new data center developments.\n\n[Sign the petition to demand a stop to new data center development in Fort Worth](https://fortworthdsa.solidarity.tech/stop-data-center-development-in-fort-worth)\n\n[Join an upcoming canvass to take action with DSA](https://fortworthdsa.solidarity.tech/no-data-centers-in-fort-worth-canvass-for-a-moratorium?event_session_ids=97013)",
+                  "sticker": "Featured Campaign",
+                  "meeting_match": ""
+                },
+                {
+                  "heading": "Power to the Tenants",
+                  "body": "Tenants across Tarrant County are facing rising housing costs, unsafe living conditions, and unresponsive property management. DSA Fort Worth is organizing to build united tenant power across Tarrant County so that working-class people can transform their neighborhoods and communities.",
+                  "sticker": "",
+                  "meeting_match": ""
+                }
+              ]
+            },
+            {
+              "_type": "groups",
+              "_version": 1,
+              "_key": "working-groups",
+              "anchor": "working-groups",
+              "eyebrow": "Working Groups",
+              "heading": "Building Working Class Power",
+              "intro": [
+                {
+                  "_type": "block",
+                  "_key": "b2f",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s2g",
+                      "text": "Our Working Groups are organized around ongoing political issues such as housing, immigrant justice, and electoral power. Working groups provide a lasting home where members can study an issue, develop strategy, and propose campaigns.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "style": "cards",
+              "tone": "white",
+              "items": [
+                {
+                  "heading": "Housing Working Group",
+                  "body": "The Housing Working Group organizes alongside Tarrant Tenants United and local tenant associations to help build a powerful, fighting, and socialist-oriented tenant movement in Tarrant County.",
+                  "sticker": "",
+                  "meeting_match": ""
+                },
+                {
+                  "heading": "Abolish ICE Working Group",
+                  "body": "The Abolish ICE Working Group organizes around immigrant rights, detention and deportation, surveillance, political repression, and the broader systems that criminalize immigrant communities.",
+                  "sticker": "",
+                  "meeting_match": ""
+                },
+                {
+                  "heading": "Electoral Working Group",
+                  "body": "The Electoral Working Group organizes to build an independent socialist political bloc in local and state government that represents people over profit and advances economic justice, anti-imperialism, and democracy for all.",
+                  "sticker": "",
+                  "meeting_match": ""
+                },
+                {
+                  "heading": "Labor Working Group",
+                  "body": "The Labor Working Group works with labor unions, organizes to create new unions, and supports striking workers. We seek to strengthen labor in Tarrant County by merging the militant & socialist currents within the labor movement to build working class power.",
+                  "sticker": "",
+                  "meeting_match": ""
+                }
+              ]
+            },
+            {
+              "_type": "groups",
+              "_version": 1,
+              "_key": "committees",
+              "anchor": "committees",
+              "eyebrow": "Committees",
+              "heading": "Fueling Our Work",
+              "intro": [
+                {
+                  "_type": "block",
+                  "_key": "b2h",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s2i",
+                      "text": "Campaigns and working groups depend on strong internal infrastructure. DSA Fort Worth’s committees provide the communications, education, technology, membership development, and administrative support needed to sustain our organizing.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b2j",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s2k",
+                      "text": "Committees are open to members who want to contribute their skills, learn something new, and help build an organization capable of winning a better world.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "style": "cards",
+              "tone": "dark",
+              "items": [
+                {
+                  "heading": "Communications and Design Committee",
+                  "body": "The Communications and Design Committee shapes how DSA Fort Worth communicates with members, supporters, and the broader public.",
+                  "sticker": "",
+                  "meeting_match": ""
+                },
+                {
+                  "heading": "Growth and Development Committee",
+                  "body": "The Growth and Development Committee helps recruit, onboard, and develop members in the chapter. The committee develops the chapter’s recruitment, onboarding, retention, mentorship, community outreach, and fundraising strategies.",
+                  "sticker": "",
+                  "meeting_match": ""
+                },
+                {
+                  "heading": "Political Education Committee",
+                  "body": "The Political Education Committee creates accessible opportunities for members to study socialist history, theory, and strategy. By developing members as both teachers and learners, the committee helps build the shared knowledge needed to understand local conditions, evaluate strategy, and connect the chapter’s campaigns to a broader socialist vision.",
+                  "sticker": "",
+                  "meeting_match": ""
+                },
+                {
+                  "heading": "Technology and Information Security Committee",
+                  "body": "The Technology and Information Security Committee maintains the digital tools and infrastructure that support DSA Fort Worth’s organizing. The committee manages systems used for chapter communications, websites, membership information, data management, and internal collaboration while promoting strong privacy, security, accessibility, and maintenance practices.",
+                  "sticker": "",
+                  "meeting_match": ""
+                }
+              ]
+            },
+            {
+              "_type": "final_cta",
+              "_version": 1,
+              "_key": "final-cta"
+            },
+            {
+              "_type": "faq",
+              "_version": 1,
+              "_key": "faq",
+              "heading": "Frequently Asked Questions",
+              "items": [
+                {
+                  "question": "What is the difference between a working group and a committee?",
+                  "answer": "Working groups organize around political issues such as housing, immigrant justice, labor, and electoral power. Committees build the internal administrative capacity needed to sustain the chapter, including communications, political education, technology, and membership development."
+                },
+                {
+                  "question": "How do I join a working group or committee?",
+                  "answer": "Attend an upcoming meeting or complete the chapter’s Get Involved form. You can identify the areas that interest you and a chapter organizer will help connect you with the appropriate group."
+                },
+                {
+                  "question": "Can members propose new work?",
+                  "answer": "Yes. DSA Fort Worth members can develop ideas, organize with other members, and use the chapter’s democratic processes to propose campaigns, projects, working groups, and other initiatives."
+                },
+                {
+                  "question": "How can I become active in the chapter?",
+                  "answer": "You can attend DSA Fort Worth 101, come to an event or meeting, or complete the Get Involved form. The Get Involved form helps us to identify and connect you to campaigns, working groups, committees, and activities that interest you. [Get Involved Form](https://fortworthdsa.solidarity.tech/get-involved-with-dsa-fort-worth)."
+                },
+                {
+                  "question": "Do I need experience to participate?",
+                  "answer": "No. Members with all levels of experience can attend meetings, learn new skills, and contribute based on their interests and capacity. Working groups and committees should help members develop and do not expect everyone to arrive as an expert."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "pages-about-us",
+        "slug": "about-us",
+        "status": "published",
+        "data": {
+          "title": "About Us",
+          "h1": "About DSA Fort Worth",
+          "lead": "DSA Fort Worth is a member-funded, member-led democratic socialist organization building working-class power throughout Tarrant County.",
+          "primary_label": "Join DSA",
+          "primary_url": "https://go.dsausa.org/fort-worth-f26",
+          "secondary_label": "Get Involved",
+          "secondary_url": "https://fortworthdsa.solidarity.tech/get-involved-with-dsa-fort-worth",
+          "hero_image_brief": "Members at a general meeting",
+          "content": [
+            {
+              "_type": "text",
+              "_version": 1,
+              "_key": "about",
+              "tone": "white",
+              "eyebrow": "About Us",
+              "heading": "Building Socialist Power in Tarrant County",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b2l",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s2m",
+                      "text": "DSA Fort Worth is a chapter of the Democratic Socialists of America, the largest socialist organization in the United States. As of 2026, DSA has more than 120,000 members nationally. Locally, we’re more than 300 members in Tarrant County.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b2n",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s2o",
+                      "text": "Together, we organize for economic justice by championing housing, healthcare, strong unions, and public institutions that meet people’s needs and are building a more democratic society and economy that works for everyone.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "stats": [
+                {
+                  "figure": "120,000+",
+                  "label": "DSA members nationally"
+                },
+                {
+                  "figure": "300+",
+                  "label": "members in Tarrant County"
+                }
+              ],
+              "buttons": []
+            },
+            {
+              "_type": "gallery",
+              "_version": 1,
+              "_key": "gallery",
+              "eyebrow": "Gallery",
+              "heading": "Organizing Across Tarrant County",
+              "slides": []
+            },
+            {
+              "_type": "text",
+              "_version": 1,
+              "_key": "democratic-socialism",
+              "tone": "paper",
+              "eyebrow": "What Is Democratic Socialism?",
+              "heading": "Democracy Should Extend to Every Part of Our Lives",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b2p",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s2q",
+                      "text": "Democratic socialism is the belief that people should have a meaningful voice in the decisions that shape their lives. This extends past government and into our workplaces, neighborhoods, and economy.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b2r",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s2s",
+                      "text": "Democratic socialists seek an economy around human needs rather than private profit. That includes expanding democratic control over essential institutions and resources, strengthening the power of workers and tenants, and ensuring that everyone has access to housing, healthcare, education, transportation, and the conditions necessary for a dignified life.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b2t",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s2u",
+                      "text": "We believe ordinary people are capable of governing their communities, shaping public priorities, and making collective decisions about the institutions on which they depend.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "stats": [],
+              "buttons": [
+                {
+                  "label": "Learn More About Democratic Socialism",
+                  "url": "https://www.dsausa.org/about-us/what-is-democratic-socialism/",
+                  "style": "primary"
+                }
+              ]
+            },
+            {
+              "_type": "checklist",
+              "_version": 1,
+              "_key": "program",
+              "tone": "white",
+              "eyebrow": "Our Values and Political Program",
+              "heading": "What We Are Working Toward",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b2v",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s2w",
+                      "text": "National DSA’s Workers Deserve More program presents a shared vision organized around three broad areas:",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b2x",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s2y",
+                      "text": "Thriving working-class communities",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b2z",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s30",
+                      "text": "A working-class foreign policy",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b31",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s32",
+                      "text": "Working-class democracy",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b33",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s34",
+                      "text": "The program includes housing and healthcare for all, labor rights, socialist feminism, an end to mass incarceration, environmental justice, opposition to U.S. military intervention, abolishing ICE, and greater democratic control of government, workplaces, and the economy.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "buttons": [
+                {
+                  "label": "Learn More About Workers Deserve More",
+                  "url": "https://program.dsausa.org/",
+                  "style": "primary"
+                }
+              ]
+            },
+            {
+              "_type": "groups",
+              "_version": 1,
+              "_key": "how-it-works",
+              "anchor": "how-our-chapter-works",
+              "eyebrow": "How Our Chapter Works",
+              "heading": "A Chapter Governed by Its Members",
+              "intro": [
+                {
+                  "_type": "block",
+                  "_key": "b35",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s36",
+                      "text": "DSA Fort Worth is a democratic, member-led organization. Members in good standing collectively determine the chapter’s political direction, priorities, leadership, and use of resources.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b37",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s38",
+                      "text": "Members exercise that authority through chapter meetings and elections. They may introduce proposals, deliberate on chapter business, vote on resolutions and endorsements, amend the bylaws, and elect chapter officers.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "style": "cards",
+              "tone": "dark",
+              "items": [
+                {
+                  "heading": "Chapter General Meetings",
+                  "body": "General meetings are the highest decision-making body of DSA Fort Worth. They provide members with a regular opportunity to receive updates, discuss chapter business, introduce proposals, and vote on decisions affecting the organization.\n\nWhile open to members and supporters, voting rights are reserved for members in good standing. [To become a member, click here](https://go.dsausa.org/fort-worth-f26).",
+                  "sticker": "",
+                  "meeting_match": ""
+                },
+                {
+                  "heading": "Working Groups",
+                  "body": "Working groups organize around specific political issues or areas of work, such as housing, electoral organizing, labor, and immigrant justice.\n\nThese bodies may research local conditions, develop proposals, organize events, recruit volunteers, and coordinate campaigns. Their work remains accountable to the chapter and the authority granted to them through chapter decisions and governing documents. [Learn more about working groups here](/our-work#working-groups).",
+                  "sticker": "",
+                  "meeting_match": ""
+                },
+                {
+                  "heading": "Committees",
+                  "body": "Committees build and maintain the chapter’s internal organizing capacity. Their responsibilities may include communications, membership development, political education, technology and security, fundraising, and other operational needs.\n\nMembers can join committees to develop skills, contribute to chapter operations, and help create the infrastructure needed to sustain organizing over time. [Learn more about committees here](/our-work#committees).",
+                  "sticker": "",
+                  "meeting_match": ""
+                },
+                {
+                  "heading": "Campaigns",
+                  "body": "Campaigns are coordinated efforts to achieve specific political or organizing objectives. A campaign may be developed by any member in good standing with DSA Fort Worth, proposed to, and approved by the chapter.\n\nCampaigns translate the chapter’s political priorities into concrete action through activities such as canvassing, public education, coalition work, petitions, direct action, and engagement with public institutions. [Learn more about chapter campaigns here](/our-work#campaigns).",
+                  "sticker": "",
+                  "meeting_match": ""
+                },
+                {
+                  "heading": "Steering Committee",
+                  "body": "DSA Fort Worth’s Steering Committee is composed of ten officers elected by the chapter’s members. Together, they are responsible for maintaining the organization between chapter meetings and carrying out the duties assigned to them by the bylaws. [Learn more about our chapter structure here](/resources#bylaws).",
+                  "sticker": "",
+                  "meeting_match": ""
+                }
+              ]
+            },
+            {
+              "_type": "text",
+              "_version": 1,
+              "_key": "grievance",
+              "anchor": "grievance-policy",
+              "tone": "paper",
+              "eyebrow": "Accountability and Member Safety",
+              "heading": "Our Grievance Policy",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b39",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s3a",
+                      "text": "DSA Fort Worth is committed to maintaining an organizing environment where members and participants are treated with dignity and respect. Our grievance policy provides a formal process for addressing harassment, discrimination, retaliation, violations of the Code of Conduct, and other conduct covered by the policy.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b3b",
+                  "style": "normal",
+                  "markDefs": [
+                    {
+                      "_type": "link",
+                      "_key": "l3d",
+                      "href": "mailto:DSAFortWorthHGOs@gmail.com"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s3c",
+                      "text": "If you have a question about the grievance process or need to raise a concern, contact ",
+                      "marks": []
+                    },
+                    {
+                      "_type": "span",
+                      "_key": "s3e",
+                      "text": "DSAFortWorthHGOs@gmail.com",
+                      "marks": [
+                        "l3d"
+                      ]
+                    },
+                    {
+                      "_type": "span",
+                      "_key": "s3f",
+                      "text": ". Messages sent to this address are handled and managed by our chapter’s elected Harassment Grievance Officers.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "stats": [],
+              "buttons": [
+                {
+                  "label": "Read the Policy",
+                  "url": "https://drive.google.com/file/d/1NmGDQqUTqrY5QXY0M_CP7z1-UatUhGn1/view?usp=sharing",
+                  "style": "primary"
+                }
+              ]
+            },
+            {
+              "_type": "text",
+              "_version": 1,
+              "_key": "dfw",
+              "tone": "white",
+              "eyebrow": "DSA Across DFW",
+              "heading": "Find a DSA Chapter or Branch Near You",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b3g",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s3h",
+                      "text": "DSA Fort Worth organizes throughout Tarrant County, but DSA chapters and branches are active in communities across the metroplex:",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b3i",
+                  "style": "normal",
+                  "markDefs": [
+                    {
+                      "_type": "link",
+                      "_key": "l3j",
+                      "href": "https://dsa-ntx.org/"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s3k",
+                      "text": "DSA North Texas",
+                      "marks": [
+                        "l3j"
+                      ]
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b3l",
+                  "style": "normal",
+                  "markDefs": [
+                    {
+                      "_type": "link",
+                      "_key": "l3m",
+                      "href": "https://www.instagram.com/dsadenton"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s3n",
+                      "text": "DSA Denton",
+                      "marks": [
+                        "l3m"
+                      ]
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b3o",
+                  "style": "normal",
+                  "markDefs": [
+                    {
+                      "_type": "link",
+                      "_key": "l3p",
+                      "href": "https://www.instagram.com/untydsa"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s3q",
+                      "text": "UNT YDSA",
+                      "marks": [
+                        "l3p"
+                      ]
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b3r",
+                  "style": "normal",
+                  "markDefs": [
+                    {
+                      "_type": "link",
+                      "_key": "l3t",
+                      "href": "https://www.dsausa.org/chapters/"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s3s",
+                      "text": "If you live outside of North Texas, access our ",
+                      "marks": []
+                    },
+                    {
+                      "_type": "span",
+                      "_key": "s3u",
+                      "text": "National Chapter Directory",
+                      "marks": [
+                        "l3t"
+                      ]
+                    },
+                    {
+                      "_type": "span",
+                      "_key": "s3v",
+                      "text": " to find a chapter near you.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "stats": [],
+              "buttons": []
+            },
+            {
+              "_type": "contact",
+              "_version": 1,
+              "_key": "contact",
+              "eyebrow": "Contact Us",
+              "heading": "Get Connected with DSA Fort Worth",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b3w",
+                  "style": "h3",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s3x",
+                      "text": "Reach our Chapter",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b3y",
+                  "style": "normal",
+                  "markDefs": [
+                    {
+                      "_type": "link",
+                      "_key": "l40",
+                      "href": "mailto:steering@dsafw.com"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s3z",
+                      "text": "Have a question about DSA Fort Worth, membership, an upcoming event, or our work in Tarrant County? Email ",
+                      "marks": []
+                    },
+                    {
+                      "_type": "span",
+                      "_key": "s41",
+                      "text": "steering@dsafw.com",
+                      "marks": [
+                        "l40"
+                      ]
+                    },
+                    {
+                      "_type": "span",
+                      "_key": "s42",
+                      "text": " or use the contact form below.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b43",
+                  "style": "h3",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s44",
+                      "text": "Partnership Requests",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b45",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s46",
+                      "text": "Community organizations interested in collaborating with DSA Fort Worth can use the contact form and select Partnership or coalition requests.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b47",
+                  "style": "h3",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s48",
+                      "text": "Press and Media",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b49",
+                  "style": "normal",
+                  "markDefs": [
+                    {
+                      "_type": "link",
+                      "_key": "l4b",
+                      "href": "mailto:steering@dsafw.com"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s4a",
+                      "text": "For press and media inquiries, please contact ",
+                      "marks": []
+                    },
+                    {
+                      "_type": "span",
+                      "_key": "s4c",
+                      "text": "steering@dsafw.com",
+                      "marks": [
+                        "l4b"
+                      ]
+                    },
+                    {
+                      "_type": "span",
+                      "_key": "s4d",
+                      "text": ".",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "form_label": "Open the Contact Form",
+              "form_url": "https://fortworthdsa.solidarity.tech/contact-us"
+            },
+            {
+              "_type": "final_cta",
+              "_version": 1,
+              "_key": "final-cta"
+            },
+            {
+              "_type": "faq",
+              "_version": 1,
+              "_key": "faq",
+              "heading": "Frequently Asked Questions",
+              "items": [
+                {
+                  "question": "What area does DSA Fort Worth serve?",
+                  "answer": "DSA Fort Worth is the Tarrant County chapter of the Democratic Socialists of America. We organize in Fort Worth and cities within Tarrant County."
+                },
+                {
+                  "question": "How Decisions Are Made",
+                  "answer": "DSA Fort Worth is governed by its members. Members vote on chapter priorities, elect chapter leaders, and participate in decisions through the processes established in the chapter’s bylaws."
+                },
+                {
+                  "question": "How is DSA Fort Worth funded?",
+                  "answer": "The chapter is funded by members and individual supporters. It does not rely on corporate funding. Membership dues and local donations support organizing, events, and chapter activities."
+                },
+                {
+                  "question": "Do I need to agree with every DSA position?",
+                  "answer": "DSA is a democratic membership organization whose positions are established through member deliberation and voting. Members may hold different views about strategy and particular issues while organizing around democratically adopted priorities."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "pages-resources",
+        "slug": "resources",
+        "status": "published",
+        "data": {
+          "title": "Resources",
+          "eyebrow": "Resources",
+          "h1": "Explore Chapter Resources",
+          "lead": "Find DSA Fort Worth’s governing documents, candidate endorsement information, and gain access to community organizations and resources serving people across Tarrant County.",
+          "hero_image_brief": "",
+          "content": [
+            {
+              "_type": "groups",
+              "_version": 1,
+              "_key": "chapter-documents",
+              "anchor": "chapter-documents",
+              "eyebrow": "Chapter Documents",
+              "heading": "How Our Chapter Operates",
+              "intro": [
+                {
+                  "_type": "block",
+                  "_key": "b4e",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s4f",
+                      "text": "DSA Fort Worth’s governing documents explain how members make decisions, elect leaders, and maintain organizational standards.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ],
+              "style": "cards",
+              "tone": "white",
+              "items": [
+                {
+                  "heading": "Bylaws",
+                  "body": "Our bylaws establish the chapter’s membership requirements, leadership structure, elections, meetings, decision-making processes, and other governing rules.\n\n[Read Our Bylaws](https://drive.google.com/file/d/1GUE706ANpMzgLXCc4xDumOdQZzXAQdwK/view)",
+                  "sticker": "",
+                  "meeting_match": ""
+                },
+                {
+                  "heading": "Code of Conduct",
+                  "body": "The DSA Code of Conduct establishes expectations for how members treat one another at chapter meetings, events, and organizing activities as well as in chapter communications.\n\n[Read the Code of Conduct](https://www.dsausa.org/dsa-code-of-conduct-for-members/)",
+                  "sticker": "",
+                  "meeting_match": ""
+                },
+                {
+                  "heading": "Grievance Policy",
+                  "body": "Our Grievance Policy explains how members can raise concerns about conduct regarding harm and harassment and explains how those concerns are reviewed and addressed.\n\n[Read the Grievance Policy](https://drive.google.com/file/d/1NmGDQqUTqrY5QXY0M_CP7z1-UatUhGn1/view?usp=sharing)",
+                  "sticker": "",
+                  "meeting_match": ""
+                }
+              ]
+            },
+            {
+              "_type": "cards",
+              "_version": 1,
+              "_key": "endorsements",
+              "anchor": "endorsements",
+              "eyebrow": "Electoral Endorsements",
+              "heading": "Seeking DSA Fort Worth’s Endorsement",
+              "intro": "Candidates interested in DSA Fort Worth’s endorsement must complete the chapter’s endorsement process.",
+              "items": [
+                {
+                  "heading": "Application and Questionnaire",
+                  "body": "To begin the endorsement process, a candidate seeking the endorsement of DSA Fort Worth must submit an application and, shortly after, complete a candidate questionnaire.",
+                  "button_label": "",
+                  "button_url": ""
+                },
+                {
+                  "heading": "Engagement with Membership",
+                  "body": "Upon completing the questionnaire, it is mandatory that the candidate seeking an endorsement hold a Candidate Forum with membership prior to the general meeting where voting will take place. These meetings will be an opportunity for the candidate to introduce themselves and field questions from general membership.",
+                  "button_label": "",
+                  "button_url": ""
+                },
+                {
+                  "heading": "Voting",
+                  "body": "Following the Candidate Forum, a resolution to endorse the candidate will be brought up before a vote at a general meeting. An endorsement resolution will require a majority vote in favor of voters who are present to pass.",
+                  "button_label": "",
+                  "button_url": ""
+                }
+              ]
+            },
+            {
+              "_type": "notice",
+              "_version": 1,
+              "_key": "endorsement-window",
+              "anchor": "apply-for-endorsement",
+              "open": false,
+              "open_heading": "Apply For Endorsement",
+              "open_text": "Submit an application to DSA Fort Worth. A representative will contact you within 14 business days to begin the endorsement process.",
+              "button_label": "Apply",
+              "button_url": "",
+              "closed_heading": "Candidate Endorsement Application",
+              "closed_text": "Thank you for your interest in our endorsement. We are not accepting endorsement applications at this time. If you would like more information on our endorsement process, please reach out to [steering@dsafw.com](mailto:steering@dsafw.com)."
+            },
+            {
+              "_type": "logos",
+              "_version": 1,
+              "_key": "community-resources",
+              "anchor": "community-resources",
+              "eyebrow": "Community Resources",
+              "heading": "Community Resources",
+              "intro": "",
+              "orgs": []
+            },
+            {
+              "_type": "faq",
+              "_version": 1,
+              "_key": "faq",
+              "heading": "Frequently Asked Questions",
+              "items": [
+                {
+                  "question": "How are chapter bylaws updated?"
+                },
+                {
+                  "question": "How do I report harassment or misconduct?",
+                  "answer": "DSA Fort Worth maintains a grievance process for reporting harm or harassment covered by the chapter’s Code of Conduct and grievance policy. Reports should be submitted through the designated grievance channel rather than the chapter’s general contact methods."
+                },
+                {
+                  "question": "Can a candidate also be endorsed by National DSA?"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "pages-join",
+        "slug": "join",
+        "status": "published",
+        "data": {
+          "title": "Join DSA",
+          "eyebrow": "Join DSA",
+          "h1": "Become a Member of DSA",
+          "lead": "With over 120,000 members and counting, the Democratic Socialists of America is the largest socialist organization in the United States. Chapters like ours across the country are organizing together for a better world.\n\nUpon joining DSA, you are sorted into a chapter based on where you live and gain access to membership rights like voting, proposing new work, and shaping your local chapter.",
+          "primary_label": "Join DSA",
+          "primary_url": "https://go.dsausa.org/fort-worth-f26",
+          "hero_image_brief": "",
+          "content": [
+            {
+              "_type": "embed_form",
+              "_version": 1,
+              "_key": "donate-form",
+              "anchor": "donate",
+              "tone": "paper",
+              "eyebrow": "Donate to DSA Fort Worth",
+              "heading": "Support DSA Fort Worth with Local Dues",
+              "image_brief": "Marchers holding red Socialism Beats Fascism! signs",
+              "form_url": "https://fortworthdsa.solidarity.tech/donate-to-dsa-fort-worth",
+              "form_title": "Donate to DSA Fort Worth",
+              "payments": true,
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b4g",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s4h",
+                      "text": "As a membership organization, dues are the backbone of our national and local operations. While national dues are required to become a member of DSA, Local dues provide a way to directly fund the work of our chapter and are a 100% contribution to DSA Fort Worth.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b4i",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s4j",
+                      "text": "The Democratic Socialists of America Fort Worth is a 501(c)(4) organization. Donations are not tax-deductible.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "_type": "faq",
+              "_version": 1,
+              "_key": "faq",
+              "heading": "Frequently Asked Questions",
+              "items": [
+                {
+                  "question": "How much does DSA membership cost?",
+                  "answer": "Members may pay monthly or annual dues, with multiple sliding scale options to meet members' financial needs. DSA also provides dues-waiver options for people experiencing financial hardship. [Dues Waiver](https://dsausa.org/dueswaiver)."
+                },
+                {
+                  "question": "Can I donate without becoming a member?",
+                  "answer": "Yes. You can make a one-time or recurring donation directly to DSA Fort Worth. Donations support local organizing but do not provide DSA membership or chapter voting rights. [Donate to DSA Fort Worth](/join#donate)."
+                },
+                {
+                  "question": "Are donations tax-deductible?",
+                  "answer": "No. DSA Fort Worth is organized as a 501(c)(4), and donations are not tax-deductible."
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "chapter": [
+      {
+        "id": "chapter-fort-worth",
+        "slug": "fort-worth",
+        "status": "published",
+        "data": {
+          "title": "DSA Fort Worth",
+          "area": "Tarrant County",
+          "join_url": "https://go.dsausa.org/fort-worth-f26",
+          "get_involved_url": "https://fortworthdsa.solidarity.tech/get-involved-with-dsa-fort-worth",
+          "newsletter_url": "https://fortworthdsa.solidarity.tech/subscribe-to-our-newsletter",
+          "calendar_url": "https://fortworthdsa.solidarity.tech/dsa-fort-worth-calendar",
+          "calendar_ics_url": "https://www.solidarity.tech/calendar/o/GdI5nnneUqgOeh2bdyVI3lxtpBE8L9WLAn3PIXinKfQ.ics",
+          "dsa_101_url": "https://fortworthdsa.solidarity.tech/dsa-101",
+          "donate_url": "https://fortworthdsa.solidarity.tech/donate-to-dsa-fort-worth",
+          "email": "steering@dsafw.com",
+          "social": [
+            {
+              "network": "instagram",
+              "url": "https://www.instagram.com/dsafortworth/"
+            }
+          ],
+          "event_categories": [
+            {
+              "name": "General Meeting",
+              "keywords": "general meeting, general body, gbm",
+              "members_only": false
+            },
+            {
+              "name": "DSA 101",
+              "keywords": "dsa 101, orientation, new member",
+              "members_only": false
+            },
+            {
+              "name": "Working Group",
+              "keywords": "working group, working session, abolish ice monthly",
+              "members_only": true
+            },
+            {
+              "name": "Committee",
+              "keywords": "committee, steering, commission, monthly meeting, quarterly meeting",
+              "members_only": true
+            },
+            {
+              "name": "Campaign Action",
+              "keywords": "canvass, petition, phonebank, phone bank, rally, march, protest, picket, testify, city council, door knock",
+              "members_only": false
+            },
+            {
+              "name": "Political Education",
+              "keywords": "let's watch, let's read, reading group, political education, pol ed, book club, teach-in, study group, workshop, training",
+              "members_only": false
+            },
+            {
+              "name": "Social",
+              "keywords": "coffee, watch, social, happy hour, party, potluck, celebration, bowling, run club, picnic",
+              "members_only": false
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

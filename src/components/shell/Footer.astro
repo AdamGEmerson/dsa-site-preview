@@ -1,0 +1,53 @@
+---
+// Footer: the stacked logo in white, the line under it and the sign-off (Sections → Footer), the
+// three footer menus, and contact + social links from Chapter details.
+import Stacked from "@/assets/brand/logo-stacked.svg";
+import Icon, { type IconName } from "@/components/ui/Icon.astro";
+import { menu, useChapter, isExternal } from "@/lib/site";
+import { useCopy, plain } from "@/lib/sections";
+
+const chapter = await useChapter(Astro);
+const copy = await useCopy("footer");
+const [tagline, signoff] = copy.paragraphs.map(plain);
+const columns = (await Promise.all(["footer_organize", "footer_learn", "footer_connect"].map((n) => menu(Astro, n)))).filter((m) => m.items.length);
+const heading = (label: string) => label.replace(/^Footer:\s*/i, "");
+const networkLabel: Record<string, string> = { instagram: "Instagram", facebook: "Facebook", x: "X", bluesky: "Bluesky", tiktok: "TikTok", youtube: "YouTube", threads: "Threads" };
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap foot-grid">
+    <div>
+      <a class="foot-logo" href="/" aria-label={`${chapter.name}, home`}><Stacked aria-hidden="true" role="presentation" /></a>
+      {tagline && <p class="foot-tag">{tagline}</p>}
+      {chapter.email && <a class="foot-email" href={`mailto:${chapter.email}`}>{chapter.email}</a>}
+      {
+        chapter.social.length > 0 && (
+          <div class="socials">
+            {chapter.social.map((s) => (
+              <a href={s.url} rel="noopener">
+                <Icon name={(s.network as IconName) || "link"} label={`${chapter.name} on ${networkLabel[s.network] ?? s.network}`} />
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </div>
+    {
+      columns.map((col) => (
+        <nav aria-label={heading(col.label)}>
+          <h2>{heading(col.label)}</h2>
+          <ul>
+            {col.items.map((i) => (
+              <li><a href={i.href} rel={isExternal(i.href) ? "noopener" : undefined}>{i.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ))
+    }
+  </div>
+  <div class="wrap foot-bottom">
+    <span>© {year} {chapter.name}</span>
+    {signoff && <span class="signoff">{signoff}</span>}
+  </div>
+</footer>

@@ -1,0 +1,18 @@
+---
+// Plain text with light inline formatting, for repeater fields (which can't hold rich text):
+// **bold**, *italic*, [label](url), and a blank line between paragraphs.
+import { isExternal } from "@/lib/site";
+const { text = "" } = Astro.props as { text?: string };
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const inline = (s: string) =>
+  esc(s)
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label: string, href: string) => {
+      const safe = /^(https?:|mailto:|tel:|\/|#)/.test(href) ? href : "#";
+      return `<a href="${safe}"${isExternal(safe) ? ' rel="noopener"' : ""}>${label}</a>`;
+    });
+const paragraphs = text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+---
+
+{paragraphs.map((p) => <p set:html={inline(p).replace(/\n/g, "<br>")} />)}

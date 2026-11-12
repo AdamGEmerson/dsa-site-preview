@@ -1,0 +1,21 @@
+---
+// The scrolling issue strip (Sections → Issue ticker, one bullet per issue). Hidden if the section
+// is missing or empty. The list is repeated once so the loop is seamless; the copy is aria-hidden.
+import Icon from "@/components/ui/Icon.astro";
+import { useCopy } from "@/lib/sections";
+const { items } = await useCopy("issue-ticker");
+const reps = items.length ? Math.max(2, Math.ceil(12 / items.length)) : 0;
+const run = Array.from({ length: reps }, () => items).flat();
+---
+
+{
+  items.length > 0 && (
+    <div class="ticker">
+      <ul class="sr-only">{items.map((t) => <li>{t}</li>)}</ul>
+      <div class="ticker-track" aria-hidden="true">
+        <ul aria-hidden="true">{run.map((t) => <li><Icon name="star" class="star" />{t}</li>)}</ul>
+        <ul aria-hidden="true">{run.map((t) => <li><Icon name="star" class="star" />{t}</li>)}</ul>
+      </div>
+    </div>
+  )
+}

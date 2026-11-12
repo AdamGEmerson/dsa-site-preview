@@ -1,0 +1,8 @@
+---
+// The logo's triple speed rules (the slanted bars beside "of America"), traced from the Figma file.
+const { class: cls, flip = false } = Astro.props as { class?: string; flip?: boolean };
+---
+
+<svg class:list={["speed", cls, { flip }]} viewBox="0 0 277 41" fill="currentColor" aria-hidden="true" preserveAspectRatio="none">
+  <path d="M5.43 0H276.76L271.33 10.05H0Z" /><path d="M4.53 19.54H275.86L272.24 26.24H.91Z" /><path d="M3.77 36.52H275.1L272.99 40.42H1.66Z" />
+</svg>

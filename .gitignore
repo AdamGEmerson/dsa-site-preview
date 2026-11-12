@@ -1,0 +1,105 @@
+# ------------------------------------------------------------------ dependencies and builds
+node_modules/
+dist/
+.astro/
+.wrangler/
+.cache/
+coverage/
+*.tsbuildinfo
+
+# ------------------------------------------------------------------ secrets and environment
+# Local and production secrets (EMDASH_ENCRYPTION_KEY). Keep a copy of .prod.vars in the chapter's
+# password manager: losing it loses encrypted plugin settings.
+.dev.vars
+.dev.vars.*
+.prod.vars
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ------------------------------------------------------------------ EmDash local data
+data.db*
+uploads/
+.emdash/
+# Site packages (content + media + author emails; same care as a database backup)
+*.emdash
+
+# ------------------------------------------------------------------ full-size photo originals
+# Kept on disk, not in git. The web-sized, metadata-stripped copies live in seed/photos/.
+originals/
+
+# ------------------------------------------------------------------ logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ------------------------------------------------------------------ OS and editors
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*~
+.idea/
+.vscode/
+.zed/
+.fleet/
+*.sublime-project
+*.sublime-workspace
+
+# ------------------------------------------------------------------ AI tooling
+# Assistant configs, memories, rules and MCP settings stay on contributors' machines.
+# Claude
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+.claude.json
+.mcp.json
+# Cursor
+.cursor/
+.cursorrules
+.cursorignore
+.cursorindexingignore
+# Windsurf / Codeium
+.windsurf/
+.windsurfrules
+.codeium/
+# OpenAI Codex and the shared AGENTS convention
+.codex/
+AGENTS.md
+AGENTS.override.md
+.agents/
+# GitHub Copilot
+.github/copilot-instructions.md
+.github/instructions/
+.github/prompts/
+.github/chatmodes/
+.copilot/
+# Gemini
+.gemini/
+GEMINI.md
+# Aider
+.aider*
+# Cline, Roo, Kilo
+.clinerules
+.clinerules/
+.roo/
+.roomodes
+.kilocode/
+# Continue, Amazon Q, JetBrains Junie, Tabnine, Sourcegraph Cody, Augment, Goose
+.continue/
+.amazonq/
+.junie/
+.tabnine*
+.cody/
+.augment/
+.augment-guidelines
+.goosehints
+# Generic assistant scratch, memory and spec folders
+.ai/
+.aiignore
+.llm/
+.specstory/

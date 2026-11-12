@@ -1,0 +1,79 @@
+---
+// Sticky header: the horizontal wordmark (logo-wordmark.svg, exported from Figma); on phones the
+// longhorn-and-rose mark (logo-mark.svg) instead, the Header menu (Menus in the admin; items with
+// children become dropdowns) and the Join button, which goes to the Join page (/join).
+import Wordmark from "@/assets/brand/logo-wordmark.svg";
+import Mark from "@/assets/brand/logo-mark.svg";
+import Icon from "@/components/ui/Icon.astro";
+import Button from "@/components/ui/Button.astro";
+import { menu, useChapter } from "@/lib/site";
+
+const nav = await menu(Astro, "primary");
+const chapter = await useChapter(Astro);
+const here = Astro.url.pathname.replace(/\/$/, "") || "/";
+const current = (href: string) => (href === here ? "page" : undefined);
+---
+
+<header class="site-header" data-header>
+  <div class="wrap bar">
+    <a class="brand" href="/" aria-label={`${chapter.name}, home`}><Wordmark class="brand-wordmark" aria-hidden="true" role="presentation" /><Mark class="brand-mark" aria-hidden="true" role="presentation" /></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-menu-toggle>
+      <Icon name="menu" class="open" /><Icon name="close" class="close" /><span class="menu-label">Menu</span>
+    </button>
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <ul class="nav-list">
+        {
+          nav.items.map((item) =>
+            item.children ? (
+              <li class="has-sub" data-sub>
+                <button class="nav-link" type="button" aria-expanded="false" data-sub-toggle>
+                  {item.label}
+                  <Icon name="chevron" class="chev" />
+                </button>
+                <ul class="sub">
+                  <li><a href={item.href} aria-current={current(item.href)}>{item.label}</a></li>
+                  {item.children.map((c) => <li><a href={c.href} aria-current={current(c.href)}>{c.label}</a></li>)}
+                </ul>
+              </li>
+            ) : (
+              <li><a class="nav-link" href={item.href} aria-current={current(item.href)}>{item.label}</a></li>
+            ),
+          )
+        }
+      </ul>
+      <Button href="/join" label="Join DSA" size="small" class="join-btn" />
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-header]");
+  const toggle = header?.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+  toggle?.addEventListener("click", () => {
+    const open = header!.classList.toggle("menu-open");
+    toggle.setAttribute("aria-expanded", String(open));
+  });
+  header?.querySelectorAll<HTMLElement>("[data-sub]").forEach((li) => {
+    const btn = li.querySelector<HTMLButtonElement>("[data-sub-toggle]")!;
+    btn.addEventListener("click", () => {
+      const open = li.classList.toggle("open");
+      btn.setAttribute("aria-expanded", String(open));
+      header.querySelectorAll<HTMLElement>("[data-sub].open").forEach((other) => {
+        if (other !== li) {
+          other.classList.remove("open");
+          other.querySelector("[data-sub-toggle]")?.setAttribute("aria-expanded", "false");
+        }
+      });
+    });
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    header?.querySelectorAll<HTMLElement>("[data-sub].open").forEach((li) => {
+      li.classList.remove("open");
+      li.querySelector("[data-sub-toggle]")?.setAttribute("aria-expanded", "false");
+    });
+  });
+  document.addEventListener("click", (e) => {
+    if (!header?.contains(e.target as Node)) header?.querySelectorAll("[data-sub].open").forEach((li) => li.classList.remove("open"));
+  });
+</script>

@@ -1,0 +1,31 @@
+---
+// Numbered cards: big outlined numerals, a heading, a sentence, a button each.
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import Button from "@/components/ui/Button.astro";
+const { block: b } = Astro.props as { block: Record<string, any> };
+const items = ((b.items ?? []) as Record<string, string>[]).filter((i) => i.heading);
+const id = `h-${b._key}`;
+---
+
+<section class="band paper" id={b.anchor || undefined} aria-labelledby={id}>
+  <div class="wrap">
+    <div class="band-head">
+      <div>
+        <Eyebrow text={b.eyebrow} />
+        <h2 id={id} class="h2">{b.heading}</h2>
+        {b.intro && <p class="intro">{b.intro}</p>}
+      </div>
+    </div>
+    <ol class="cards">
+      {
+        items.map((i) => (
+          <li class="card">
+            <h3 class="h3">{i.heading}</h3>
+            {i.body && <p>{i.body}</p>}
+            {i.button_label && i.button_url && <Button href={i.button_url} label={i.button_label} variant="secondary" size="small" />}
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

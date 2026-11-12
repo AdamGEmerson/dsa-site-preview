@@ -1,0 +1,37 @@
+---
+// Text: eyebrow and heading beside rich text (stacked on phones), optional key figures below.
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import RichText from "@/components/ui/RichText.astro";
+import Buttons from "@/components/ui/Buttons.astro";
+const { block: b } = Astro.props as { block: Record<string, any> };
+const tone = b.tone || "white";
+const stats = ((b.stats ?? []) as { figure: string; label: string }[]).filter((s) => s.figure);
+const id = `h-${b._key}`;
+---
+
+<section class:list={["band text-block", tone]} id={b.anchor || undefined} aria-labelledby={b.heading ? id : undefined}>
+  <div class="wrap">
+    <div class="text-grid">
+      <div>
+        <Eyebrow text={b.eyebrow} />
+        {b.heading && <h2 id={id} class="h2">{b.heading}</h2>}
+      </div>
+      <div>
+        <RichText value={b.body} />
+        <Buttons buttons={b.buttons} />
+      </div>
+    </div>
+    {
+      stats.length > 0 && (
+        <dl class="stats">
+          {stats.map((s) => (
+            <div class="stat">
+              <dt class="stat-figure">{s.figure}</dt>
+              <dd class="stat-label">{s.label}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+  </div>
+</section>

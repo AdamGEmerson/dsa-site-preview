@@ -1,0 +1,71 @@
+---
+// Upcoming events from the chapter calendar feed (Chapter details → Calendar feed). Each card: the
+// date stamp, name, time, place or "Virtual", category when the feed has one, the first sentence of
+// the description, and RSVP. Events drop off once they end; with none, a note and the calendar link.
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import Button from "@/components/ui/Button.astro";
+import EventMeta from "@/components/ui/EventMeta.astro";
+import { formatWhen } from "@/lib/events";
+import { useChapter, useEvents, useSettings } from "@/lib/site";
+
+const { block: b } = Astro.props as { block: Record<string, any> };
+const chapter = await useChapter(Astro);
+const { timezone } = await useSettings(Astro);
+const count = Math.min(6, Math.max(3, Number(b.count) || 6));
+const events = (await useEvents(Astro)).slice(0, count);
+const calendarUrl = b.button_url || chapter.calendarUrl;
+const id = `h-${b._key}`;
+---
+
+<section class="band white" aria-labelledby={id}>
+  <div class="wrap">
+    <div class="band-head">
+      <div>
+        <Eyebrow text={b.eyebrow} />
+        <h2 id={id} class="h2">{b.heading}</h2>
+        {b.intro && <p class="intro">{b.intro}</p>}
+      </div>
+      {events.length > 0 && calendarUrl && b.button_label && <Button href={calendarUrl} label={b.button_label} variant="secondary" />}
+    </div>
+    {
+      events.length > 0 ? (
+        <ul class="events">
+          {events.map((e) => {
+            const w = formatWhen(e, timezone);
+            return (
+              <li>
+                <article class="event">
+                  <div class="event-top">
+                    <time class="date" datetime={w.iso}>
+                      <span class="m">{w.month}</span>
+                      <span class="d">{w.day}</span>
+                      <span class="w">{w.weekday}</span>
+                    </time>
+                    <div>
+                      <EventMeta event={e} when={w} part="tags" />
+                      <h3>{e.title}</h3>
+                    </div>
+                  </div>
+                  <div class="event-body">
+                    <EventMeta event={e} when={w} part="meta" />
+                    {e.summary && <p>{e.summary}</p>}
+                  </div>
+                  {e.url && !e.membersOnly && (
+                    <div class="event-foot">
+                      <Button href={e.url} label="RSVP" size="small" />
+                    </div>
+                  )}
+                </article>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <div class="events-empty">
+          <span>{b.empty_text}</span>
+          {calendarUrl && b.button_label && <Button href={calendarUrl} label={b.button_label} />}
+        </div>
+      )
+    }
+  </div>
+</section>

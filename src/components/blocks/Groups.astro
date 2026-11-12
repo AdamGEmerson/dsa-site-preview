@@ -1,0 +1,88 @@
+---
+// Group list: campaigns, working groups or committees. "feature" = full-width campaign cards with
+// action rows; "cards" = a grid. A card with meeting words shows that group's next meeting from the
+// calendar feed (whole-word match on the event title), so it stays current by itself. Each card
+// can be linked to by its name: "Code of Conduct" → #code-of-conduct.
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import RichText from "@/components/ui/RichText.astro";
+import InlineMd from "@/components/ui/InlineMd.astro";
+import Icon from "@/components/ui/Icon.astro";
+import Sticker from "@/components/ui/Sticker.astro";
+import { formatWhen, nextMatching } from "@/lib/events";
+import { isExternal, useEvents, useSettings } from "@/lib/site";
+import { slugify } from "@/lib/text";
+
+type Item = { heading: string; body?: string; sticker?: string; meeting_match?: string };
+const { block: b } = Astro.props as { block: Record<string, any> };
+const items = ((b.items ?? []) as Item[]).filter((i) => i.heading);
+const style = b.style === "feature" ? "feature" : "cards";
+const tone = b.tone || "white";
+const wantsMeetings = items.some((i) => i.meeting_match?.trim());
+const events = wantsMeetings ? await useEvents(Astro) : [];
+const { timezone } = await useSettings(Astro);
+const id = `h-${b._key}`;
+
+/** Split a card's text: paragraphs that are only a link become action rows. */
+const LINK_ONLY = /^\[([^\]]+)\]\(([^)\s]+)\)\.?$/;
+const parts = (text = "") => {
+  const paras = text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  return {
+    text: paras.filter((p) => !LINK_ONLY.test(p)).join("\n\n"),
+    actions: paras.map((p) => p.match(LINK_ONLY)).filter((m): m is RegExpMatchArray => Boolean(m)).map((m) => ({ label: m[1]!, url: m[2]! })),
+  };
+};
+---
+
+<section class:list={["band groups", tone, `groups-${style}`]} id={b.anchor || undefined} aria-labelledby={id}>
+  <div class="wrap">
+    <div class="groups-head">
+      <div>
+        <Eyebrow text={b.eyebrow} />
+        <h2 id={id} class="h2">{b.heading}</h2>
+      </div>
+      <RichText value={b.intro} class="groups-intro" />
+    </div>
+    <ul class:list={["group-list", `count-${items.length}`]}>
+      {
+        items.map((item) => {
+          const { text, actions } = parts(item.body);
+          const next = item.meeting_match?.trim() ? nextMatching(events, item.meeting_match) : undefined;
+          const when = next && formatWhen(next, timezone);
+          return (
+            <li class="group" id={slugify(item.heading)}>
+              <article class:list={{ "has-actions": actions.length > 0 }}>
+                <div class="group-main">
+                  {item.sticker && <Sticker text={item.sticker} class="group-sticker" />}
+                  <h3 class="h3">{item.heading}</h3>
+                  {text && <div class="group-text"><InlineMd text={text} /></div>}
+                </div>
+                {actions.length > 0 && (
+                  <ul class="actions group-actions">
+                    {actions.map((a) => (
+                      <li>
+                        <a class="action" href={a.url} rel={isExternal(a.url) ? "noopener" : undefined}>
+                          <span>{a.label}</span>
+                          <span class="go"><Icon name="arrow" /></span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {next && when && (
+                  <a class="next-meeting" href={next.url || undefined} rel="noopener">
+                    <span class="nm-label">Next meeting</span>
+                    <span class="nm-when">
+                      <time datetime={when.iso}>{when.weekday}, {when.month} {when.day}</time> · {when.time.split(" – ")[0]}
+                      {next.virtual ? " · Virtual" : next.hybrid ? " · In person + virtual" : ""}
+                    </span>
+                    <Icon name="arrow" class="nm-go" />
+                  </a>
+                )}
+              </article>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</section>

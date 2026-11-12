@@ -1,0 +1,30 @@
+---
+// Any address with no page, including pages that aren't built yet. Wording from Sections →
+// "Page not found" (heading, text, link-only paragraphs as buttons); a plain fallback if it's missing.
+import Base from "@/layouts/Base.astro";
+import Mark from "@/assets/brand/logo-icon.svg";
+import Sticker from "@/components/ui/Sticker.astro";
+import Buttons from "@/components/ui/Buttons.astro";
+import { useSettings } from "@/lib/site";
+import { useCopy, plain } from "@/lib/sections";
+
+const { siteTitle, separator, siteUrl } = await useSettings(Astro);
+const copy = await useCopy("not-found");
+const heading = copy.heading || "Page not found";
+const buttons = (copy.buttons.length ? copy.buttons : [{ label: "Back to Home", url: "/" }]).map((b, i) => ({ ...b, style: i === 0 ? "primary" : "secondary" }));
+Astro.response.status = 404;
+---
+
+<Base title={`${heading}${separator}${siteTitle}`} canonical={`${siteUrl}/404`} image={`${siteUrl}/og-default.png`} robots="noindex, follow">
+  <section class="hero page not-found" aria-labelledby="h1">
+    <Mark class="hero-mark" aria-hidden="true" role="presentation" />
+    <div class="wrap hero-inner">
+      <div>
+        <Sticker text="404" class="not-found-sticker" />
+        <h1 id="h1" class="display h1">{heading}</h1>
+        {copy.paragraphs.map((p) => <p class="lead">{plain(p)}</p>)}
+        <Buttons buttons={buttons} />
+      </div>
+    </div>
+  </section>
+</Base>

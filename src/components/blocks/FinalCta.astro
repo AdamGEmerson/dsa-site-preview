@@ -1,0 +1,26 @@
+---
+// The site-wide closing call to action. Wording from Sections → Final call to action: the heading,
+// paragraphs, and link-only paragraphs as buttons. Hidden if the section is missing. The block
+// itself carries an optional background photo.
+import Mark from "@/assets/brand/logo-icon.svg";
+import Buttons from "@/components/ui/Buttons.astro";
+import PhotoBg from "@/components/ui/PhotoBg.astro";
+import { useCopy, plain } from "@/lib/sections";
+const { block: b = {} } = Astro.props as { block?: Record<string, any> };
+const copy = await useCopy("final-cta");
+const buttons = copy.buttons.map((b, i) => ({ ...b, style: i === 0 ? "primary" : "secondary" }));
+---
+
+{
+  copy.found && copy.heading && (
+    <section class:list={["band red on-red final", { "has-photo": b.image?.id }]} aria-labelledby="final-cta">
+      <PhotoBg image={b.image} focus={b.image_focus} />
+      <Mark class="final-mark" aria-hidden="true" role="presentation" />
+      <div class="wrap">
+        <h2 id="final-cta" class="display h-band">{copy.heading}</h2>
+        {copy.paragraphs.map((p) => <p class="lead">{plain(p)}</p>)}
+        <Buttons buttons={buttons} />
+      </div>
+    </section>
+  )
+}

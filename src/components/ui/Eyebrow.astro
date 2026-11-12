@@ -1,0 +1,17 @@
+---
+// The small script label above a heading, between the logo's speed rules, always in title case
+// whatever the editor typed. Renders nothing when empty.
+import Speed from "./Speed.astro";
+import { titleCase } from "@/lib/text";
+const { text, edit, rules = true } = Astro.props as { text?: string; edit?: Record<string, string>; rules?: boolean };
+---
+
+{
+  text && (
+    <p class="eyebrow">
+      {rules && <Speed flip />}
+      <span {...edit}>{titleCase(text)}</span>
+      {rules && <Speed />}
+    </p>
+  )
+}

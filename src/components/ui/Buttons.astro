@@ -1,0 +1,17 @@
+---
+// A row of buttons from a block's Buttons repeater. The first defaults to primary.
+import Button from "./Button.astro";
+import type { Btn } from "@/lib/site";
+const { buttons = [], class: cls } = Astro.props as { buttons?: Btn[] | null; class?: string };
+const list = (buttons ?? []).filter((b) => b?.label && b?.url);
+---
+
+{
+  list.length > 0 && (
+    <div class:list={["btn-row", cls]}>
+      {list.map((b, i) => (
+        <Button href={b.url} label={b.label} variant={b.style || (i === 0 ? "primary" : "secondary")} />
+      ))}
+    </div>
+  )
+}

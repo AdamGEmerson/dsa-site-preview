@@ -1,0 +1,7 @@
+---
+// Portable Text from EmDash, in the site's prose style.
+import { PortableText } from "emdash/ui";
+const { value, class: cls } = Astro.props as { value?: unknown[] | null; class?: string };
+---
+
+{Array.isArray(value) && value.length > 0 && <div class:list={["prose", cls]}><PortableText value={value as any} /></div>}

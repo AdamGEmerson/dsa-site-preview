@@ -1,0 +1,66 @@
+---
+// Embedded form: a Solidarity Tech form (donate, sign-up, petition, contact) on the page, beside the
+// heading, text and an optional photo. Editors paste the form's normal link; we load its /embed
+// version. Solidarity Tech's embed script (once per page) sizes the iframe to the form and forwards
+// UTM tags; without it the iframe still works at its minimum height. Only *.solidarity.tech links
+// are embedded. Anything else falls back to a button to the link.
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import RichText from "@/components/ui/RichText.astro";
+import Photo from "@/components/ui/Photo.astro";
+import Button from "@/components/ui/Button.astro";
+
+const { block: b } = Astro.props as { block: Record<string, any> };
+const tone = b.tone || "paper";
+const id = `h-${b._key}`;
+
+let form: { page: string; embed: string; script: string } | null = null;
+try {
+  const url = new URL(b.form_url);
+  if (url.protocol === "https:" && /(^|\.)solidarity\.tech$/i.test(url.hostname)) {
+    const path = url.pathname.replace(/\/+$/, "").replace(/\/embed$/, "");
+    form = { page: `${url.origin}${path}`, embed: `${url.origin}${path}/embed${url.search}`, script: `${url.origin}/embed/v1.js` };
+  }
+} catch {
+  form = null;
+}
+
+// Load the embed script once per page, however many forms are on it
+const locals = Astro.locals as unknown as { __stEmbedScript?: boolean };
+const loadScript = Boolean(form) && !locals.__stEmbedScript;
+if (form) locals.__stEmbedScript = true;
+const title = b.form_title || b.heading;
+---
+
+<section class:list={["band embed-band", tone]} id={b.anchor || undefined} aria-labelledby={id}>
+  <div class="wrap embed-grid">
+    <div class="embed-copy">
+      <Eyebrow text={b.eyebrow} />
+      <h2 id={id} class="h2">{b.heading}</h2>
+      <RichText value={b.body} />
+      {
+        (b.image?.id || b.image_brief) && (
+          <figure class="embed-photo">
+            <div class="print">
+              <Photo image={b.image} brief={b.image_brief} focus={b.image_focus} sizes="(min-width: 960px) 40vw, 100vw" />
+            </div>
+          </figure>
+        )
+      }
+    </div>
+    <div class="embed-form">
+      {
+        form ? (
+          <>
+            <iframe data-st-embed src={form.embed} title={title} loading="lazy" allow={b.payments ? "payment *" : undefined} style="width:100%;border:none;min-height:500px;" />
+            <p class="embed-fallback">
+              Form not loading? <a href={form.page} rel="noopener">Open it on Solidarity Tech</a>.
+            </p>
+            {loadScript && <script is:inline async src={form.script} />}
+          </>
+        ) : (
+          b.form_url && <Button href={b.form_url} label={title || "Open the form"} />
+        )
+      }
+    </div>
+  </div>
+</section>

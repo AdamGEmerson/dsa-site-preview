@@ -1,0 +1,103 @@
+---
+// Photo slideshow: one photo at a time with its caption and date, advancing every 7 seconds.
+// Pauses on hover or focus, has a pause button, and doesn't move for visitors who prefer reduced
+// motion. Slides without a photo are skipped; with none at all the section is hidden (editors see
+// a note).
+import { Image } from "emdash/ui";
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import Icon from "@/components/ui/Icon.astro";
+
+type Slide = { image?: { id?: string; alt?: string }; caption?: string; date?: string };
+const { block: b } = Astro.props as { block: Record<string, any> };
+const slides = ((b.slides ?? []) as Slide[]).filter((s) => s.image?.id);
+const editor = Boolean(Astro.locals.user);
+const id = `h-${b._key}`;
+---
+
+{
+  slides.length > 0 ? (
+    <section class="band dark gallery" aria-labelledby={id}>
+      <div class="wrap">
+        <div class="featured-head">
+          <div>
+            <Eyebrow text={b.eyebrow} />
+            <h2 id={id} class="h2">{b.heading}</h2>
+          </div>
+          {slides.length > 1 && (
+            <div class="carousel-controls gallery-controls">
+              <button type="button" class="carousel-btn" data-gallery-pause aria-label="Pause slideshow" aria-pressed="false">
+                <Icon name="pause" class="i-pause" />
+                <Icon name="play" class="i-play" />
+              </button>
+              <button type="button" class="carousel-btn" data-gallery-step="-1" aria-label="Previous photo"><Icon name="arrow" class="flip-x" /></button>
+              <button type="button" class="carousel-btn" data-gallery-step="1" aria-label="Next photo"><Icon name="arrow" /></button>
+            </div>
+          )}
+        </div>
+        <div class="gallery-stage" data-gallery role="group" aria-roledescription="slideshow" aria-label={b.heading}>
+          {slides.map((s, i) => (
+            <figure class:list={["slide", { "is-active": i === 0 }]} data-slide aria-hidden={i > 0 ? "true" : undefined} aria-roledescription="slide" aria-label={`${i + 1} of ${slides.length}`}>
+              <div class="slide-photo">
+                <Image image={s.image as any} sizes="(min-width: 1340px) 1240px, 100vw" priority={i === 0} />
+              </div>
+              {(s.caption || s.date) && (
+                <figcaption>
+                  {s.date && <span class="slide-date">{s.date}</span>}
+                  {s.caption && <span class="slide-caption">{s.caption}</span>}
+                </figcaption>
+              )}
+            </figure>
+          ))}
+          {slides.length > 1 && (
+            <div class="gallery-dots" aria-hidden="true">
+              {slides.map((_, i) => <span class:list={["dot", { on: i === 0 }]} data-dot />)}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  ) : (
+    editor && <p class="unknown-block">“{b.heading}” is hidden until it has at least one photo. Add photos in its Photos list.</p>
+  )
+}
+
+<script>
+  document.querySelectorAll<HTMLElement>(".gallery").forEach((section) => {
+    const stage = section.querySelector<HTMLElement>("[data-gallery]")!;
+    const slides = [...stage.querySelectorAll<HTMLElement>("[data-slide]")];
+    const dots = [...stage.querySelectorAll<HTMLElement>("[data-dot]")];
+    const pause = section.querySelector<HTMLButtonElement>("[data-gallery-pause]");
+    if (slides.length < 2) return;
+    let index = 0;
+    let paused = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let hovering = false;
+    const show = (n: number) => {
+      index = (n + slides.length) % slides.length;
+      slides.forEach((s, i) => {
+        s.classList.toggle("is-active", i === index);
+        if (i === index) s.removeAttribute("aria-hidden");
+        else s.setAttribute("aria-hidden", "true");
+      });
+      dots.forEach((d, i) => d.classList.toggle("on", i === index));
+    };
+    const setPaused = (p: boolean) => {
+      paused = p;
+      pause?.setAttribute("aria-pressed", String(p));
+      pause?.setAttribute("aria-label", p ? "Play slideshow" : "Pause slideshow");
+      section.classList.toggle("is-paused", p);
+    };
+    setPaused(paused);
+    pause?.addEventListener("click", () => setPaused(!paused));
+    section.querySelectorAll<HTMLButtonElement>("[data-gallery-step]").forEach((btn) =>
+      btn.addEventListener("click", () => {
+        setPaused(true);
+        show(index + Number(btn.dataset.galleryStep));
+      }),
+    );
+    stage.addEventListener("mouseenter", () => (hovering = true));
+    stage.addEventListener("mouseleave", () => (hovering = false));
+    setInterval(() => {
+      if (!paused && !hovering && !section.contains(document.activeElement) && document.visibilityState === "visible") show(index + 1);
+    }, 7000);
+  });
+</script>

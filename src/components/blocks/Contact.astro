@@ -1,0 +1,34 @@
+---
+// Contact: topics on the left (Heading 3 each, from the rich text), a panel on the right with the
+// contact form button and the chapter email from Chapter details.
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import RichText from "@/components/ui/RichText.astro";
+import Button from "@/components/ui/Button.astro";
+import Icon from "@/components/ui/Icon.astro";
+import { useChapter } from "@/lib/site";
+const { block: b } = Astro.props as { block: Record<string, any> };
+const chapter = await useChapter(Astro);
+const id = `h-${b._key}`;
+---
+
+<section class="band paper contact" id="contact" aria-labelledby={id}>
+  <div class="wrap">
+    <Eyebrow text={b.eyebrow} />
+    <h2 id={id} class="h2">{b.heading}</h2>
+    <div class="contact-grid">
+      <RichText value={b.body} class="contact-topics" />
+      <aside class="contact-panel" aria-label="Contact the chapter">
+        <p class="contact-panel-title">Send us a message</p>
+        {b.form_url && <Button href={b.form_url} label={b.form_label || "Contact Form"} />}
+        {
+          chapter.email && (
+            <a class="contact-email" href={`mailto:${chapter.email}`}>
+              <Icon name="mail" />
+              <span>{chapter.email}</span>
+            </a>
+          )
+        }
+      </aside>
+    </div>
+  </div>
+</section>

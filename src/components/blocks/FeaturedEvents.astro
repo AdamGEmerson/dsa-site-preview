@@ -1,0 +1,97 @@
+---
+// Featured events carousel: the events editors picked (by their Solidarity Tech links), in date
+// order, each with its banner image from Solidarity Tech. Picks that have ended drop off; with no
+// upcoming picks it shows the next few events instead (fallback_count; 0 hides the section).
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import Button from "@/components/ui/Button.astro";
+import Icon from "@/components/ui/Icon.astro";
+import EventMeta from "@/components/ui/EventMeta.astro";
+import { eventBanner, formatWhen, sameUrl, type ChapterEvent } from "@/lib/events";
+import { useEvents, useSettings } from "@/lib/site";
+
+const { block: b } = Astro.props as { block: Record<string, any> };
+const all = await useEvents(Astro);
+const { timezone } = await useSettings(Astro);
+const picks = ((b.picks ?? []) as { url: string }[]).map((p) => p.url).filter(Boolean);
+// The next upcoming session of each pick (a pick can recur)
+let events: ChapterEvent[] = picks
+  .map((url) => all.find((e) => sameUrl(e.url, url)))
+  .filter((e): e is ChapterEvent => Boolean(e))
+  .filter((e, i, list) => list.findIndex((x) => x.id === e.id) === i)
+  .sort((x, y) => x.start.getTime() - y.start.getTime());
+if (!events.length) events = all.slice(0, Math.max(0, Number(b.fallback_count ?? 4)));
+const banners = b.banners !== false ? await Promise.all(events.map((e) => eventBanner(e.url))) : events.map(() => "");
+const id = `h-${b._key}`;
+const label = b.heading || b.eyebrow || "Featured events";
+---
+
+{
+  events.length > 0 && (
+    <section class="band white featured" aria-labelledby={b.heading ? id : undefined} aria-label={b.heading ? undefined : label}>
+      <div class="wrap">
+        <div class="featured-head">
+          <div>
+            <Eyebrow text={b.eyebrow} />
+            {b.heading && <h2 id={id} class="h2">{b.heading}</h2>}
+          </div>
+          <div class="carousel-controls" data-carousel-controls hidden>
+            <button type="button" class="carousel-btn" data-dir="-1" aria-label="Previous events"><Icon name="arrow" class="flip-x" /></button>
+            <button type="button" class="carousel-btn" data-dir="1" aria-label="Next events"><Icon name="arrow" /></button>
+          </div>
+        </div>
+      </div>
+      <div class="carousel" data-carousel tabindex="0" aria-label={`${label}, scrollable`}>
+        <ol class="carousel-track">
+          {events.map((e, i) => {
+            const w = formatWhen(e, timezone);
+            return (
+              <li class="feature">
+                <article>
+                  <div class:list={["feature-banner", { empty: !banners[i] }]}>
+                    {banners[i] && <img src={banners[i]} alt="" loading={i < 2 ? "eager" : "lazy"} decoding="async" width="960" height="320" />}
+                    <time class="date" datetime={w.iso}>
+                      <span class="m">{w.month}</span>
+                      <span class="d">{w.day}</span>
+                      <span class="w">{w.weekday}</span>
+                    </time>
+                  </div>
+                  <div class="feature-body">
+                    <EventMeta event={e} when={w} part="tags" />
+                    <h3 class="h3">{e.title}</h3>
+                    <EventMeta event={e} when={w} part="meta" />
+                    {e.summary && <p>{e.summary}</p>}
+                  </div>
+                  {e.url && !e.membersOnly && <div class="feature-foot"><Button href={e.url} label="RSVP" size="small" /></div>}
+                </article>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  // Prev/next buttons appear only when the cards overflow; they scroll by one card.
+  document.querySelectorAll<HTMLElement>(".featured").forEach((section) => {
+    const track = section.querySelector<HTMLElement>("[data-carousel]")!;
+    const controls = section.querySelector<HTMLElement>("[data-carousel-controls]")!;
+    const [prev, next] = controls.querySelectorAll<HTMLButtonElement>("button");
+    const update = () => {
+      const overflow = track.scrollWidth > track.clientWidth + 4;
+      controls.hidden = !overflow;
+      prev!.disabled = track.scrollLeft < 4;
+      next!.disabled = track.scrollLeft + track.clientWidth > track.scrollWidth - 4;
+    };
+    controls.querySelectorAll<HTMLButtonElement>("button").forEach((btn) =>
+      btn.addEventListener("click", () => {
+        const card = track.querySelector<HTMLElement>(".feature");
+        track.scrollBy({ left: Number(btn.dataset.dir) * ((card?.offsetWidth ?? 320) + 24), behavior: "smooth" });
+      }),
+    );
+    track.addEventListener("scroll", update, { passive: true });
+    new ResizeObserver(update).observe(track);
+    update();
+  });
+</script>

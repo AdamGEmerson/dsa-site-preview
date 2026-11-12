@@ -1,0 +1,8 @@
+---
+// A block type the site has no renderer for (e.g. one added in Content Types before the code
+// caught up). Invisible to visitors; signed-in editors see a notice so it doesn't fail silently.
+const { type } = Astro.props as { type: string };
+const editor = Boolean(Astro.locals.user);
+---
+
+{editor && <p class="unknown-block">No renderer for the “{type}” block yet. It won’t show on the public site until one is added in the code.</p>}

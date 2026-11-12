@@ -1,0 +1,36 @@
+---
+// Page hero: the photo duotoned into DSA Red under film grain (or plain grainy red until a
+// photo is uploaded), the longhorn-and-rose mark bleeding off the right, the slanted headline.
+import Mark from "@/assets/brand/logo-icon.svg";
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import Buttons from "@/components/ui/Buttons.astro";
+import PhotoBg from "@/components/ui/PhotoBg.astro";
+import type { Entry } from "@/lib/site";
+
+const { entry, variant = "home" } = Astro.props as { entry: Entry; variant?: "home" | "page" };
+const d = entry.data;
+const edit = entry.edit ?? {};
+const hasPhoto = Boolean(d.hero_image?.id);
+const buttons = [
+  { label: d.primary_label, url: d.primary_url, style: "primary" },
+  { label: d.secondary_label, url: d.secondary_url, style: "secondary" },
+];
+---
+
+<section class:list={["hero", variant, { "has-photo": hasPhoto }]} aria-labelledby="h1">
+  <PhotoBg image={d.hero_image} focus={d.hero_image_focus} priority edit={edit.hero_image} />
+  <Mark class="hero-mark" aria-hidden="true" role="presentation" />
+  <div class="wrap hero-inner">
+    <div>
+      <Eyebrow text={d.eyebrow} edit={edit.eyebrow} />
+      <h1 id="h1" class="display h1" {...edit.h1}>{d.h1}</h1>
+      {d.lead && (
+        <div class="hero-lead" {...edit.lead}>
+          {(d.lead as string).split(/\n\s*\n/).map((para) => para.trim()).filter(Boolean).map((para) => <p class="lead">{para}</p>)}
+        </div>
+      )}
+      <Buttons buttons={buttons} />
+    </div>
+  </div>
+  {!hasPhoto && d.hero_image_brief && Astro.locals.user && <p class="photo-brief">Hero photo to come: {d.hero_image_brief}</p>}
+</section>

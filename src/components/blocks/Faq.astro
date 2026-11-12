@@ -1,0 +1,73 @@
+---
+// FAQ accordion. The page adds FAQPage structured data from these blocks (see lib/schema.ts).
+// A question without an answer is left out; signed-in editors see a note so it isn't forgotten.
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import InlineMd from "@/components/ui/InlineMd.astro";
+import Icon from "@/components/ui/Icon.astro";
+const { block: b } = Astro.props as { block: Record<string, any> };
+const all = ((b.items ?? []) as { question: string; answer?: string }[]).filter((i) => i.question);
+const items = all.filter((i) => i.answer?.trim());
+const unanswered = all.filter((i) => !i.answer?.trim());
+const editor = Boolean(Astro.locals.user);
+const id = `h-${b._key}`;
+---
+
+<section class="band white" aria-labelledby={b.heading ? id : undefined}>
+  <div class="wrap faq-grid">
+    <div>
+      <Eyebrow text={b.eyebrow} />
+      {b.heading && <h2 id={id} class="h2">{b.heading}</h2>}
+    </div>
+    <div class="faq">
+      {
+        items.map((i, n) => (
+          <details open={n === 0}>
+            <summary>
+              {i.question}
+              <span class="pm"><Icon name="plus" /></span>
+            </summary>
+            <div class="answer"><div class="answer-inner"><InlineMd text={i.answer} /></div></div>
+          </details>
+        ))
+      }
+      {editor && unanswered.length > 0 && (
+        <p class="unknown-block">Hidden until answered: {unanswered.map((i) => `“${i.question}”`).join(", ")}</p>
+      )}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Drawers slide open and closed (height + fade) instead of snapping. Native <details> underneath,
+  // so it still works without JavaScript; skipped when the visitor prefers reduced motion.
+  const ease = "cubic-bezier(0.2, 0.7, 0.2, 1)";
+  document.querySelectorAll<HTMLDetailsElement>(".faq details").forEach((details) => {
+    const summary = details.querySelector("summary")!;
+    const body = details.querySelector<HTMLElement>(".answer")!;
+    let anim: Animation | null = null;
+    summary.addEventListener("click", (event) => {
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      event.preventDefault();
+      const from = anim ? body.getBoundingClientRect().height : null;
+      anim?.cancel();
+      if (details.open && !details.classList.contains("opening")) {
+        details.classList.add("closing");
+        anim = body.animate({ height: [`${from ?? body.offsetHeight}px`, "0px"], opacity: [1, 0] }, { duration: 260, easing: ease });
+        anim.onfinish = () => {
+          details.open = false;
+          details.classList.remove("closing");
+          anim = null;
+        };
+      } else {
+        details.classList.remove("closing");
+        details.classList.add("opening");
+        details.open = true;
+        anim = body.animate({ height: [`${from ?? 0}px`, `${body.scrollHeight}px`], opacity: [0, 1] }, { duration: 320, easing: ease });
+        anim.onfinish = () => {
+          details.classList.remove("opening");
+          anim = null;
+        };
+      }
+    });
+  });
+</script>

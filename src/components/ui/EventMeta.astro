@@ -1,0 +1,45 @@
+---
+// The details list on every event card and calendar row: tags, time, place. Members-only events
+// get the Members Only badge and only "In person" / "Virtual" for a place, never the venue or
+// address (the meetings aren't public).
+import Icon from "./Icon.astro";
+import type { ChapterEvent } from "@/lib/events";
+interface Props {
+  event: ChapterEvent;
+  when: { long: string; time: string };
+  /** Render the category tag + badge row (cards put it above the title themselves) */
+  part: "tags" | "meta";
+}
+const { event: e, when: w, part } = Astro.props;
+const place = e.membersOnly ? (e.virtual ? "Virtual" : e.hybrid ? "In person + virtual" : "In person") : e.location;
+---
+
+{
+  part === "tags"
+    ? (e.category || e.membersOnly) && (
+        <div class="event-tags">
+          {e.category && <span class="tag">{e.category}</span>}
+          {e.membersOnly && (
+            <span class="badge-members">
+              <Icon name="lock" />
+              Members Only
+            </span>
+          )}
+        </div>
+      )
+    : (
+        <ul class="meta">
+          <li><Icon name="clock" /><span><span class="sr-only">{w.long}, </span>{w.time}</span></li>
+          {place && (
+            <li>
+              <Icon name={e.virtual ? "video" : "pin"} />
+              <span>
+                {place}
+                {!e.membersOnly && e.address && <span class="addr">{e.address}</span>}
+              </span>
+            </li>
+          )}
+          {!e.membersOnly && e.hybrid && <li><Icon name="video" /><span>Virtual option</span></li>}
+        </ul>
+      )
+}
