@@ -1,0 +1,79 @@
+---
+// News list: articles from News as cards, newest first. Each card: the hero photo (or the mark on
+// red until it has one), kind, date, first byline, headline and summary; the whole card links to
+// the article.
+// With no count it lists them all (the News page); with one, the latest few and a button to the rest.
+import { Image } from "emdash/ui";
+import Mark from "@/assets/brand/logo-icon.svg";
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import Button from "@/components/ui/Button.astro";
+import { articleDate, creditsOf, latestNews, longDate } from "@/lib/article";
+import { useSettings } from "@/lib/site";
+
+const { block: b } = Astro.props as { block: Record<string, any> };
+const { timezone } = await useSettings(Astro);
+const all = await latestNews();
+const count = Number(b.count) || 0;
+const articles = count > 0 ? all.slice(0, count) : all;
+const hasHead = Boolean(b.eyebrow || b.heading || b.intro);
+const button = b.button_label && b.button_url;
+const id = `h-${b._key}`;
+---
+
+<section class="band white news" aria-labelledby={b.heading ? id : undefined} aria-label={b.heading ? undefined : "Articles"}>
+  <div class="wrap">
+    {
+      (hasHead || button) && articles.length > 0 && (
+        <div class="band-head">
+          <div>
+            <Eyebrow text={b.eyebrow} />
+            {b.heading && <h2 id={id} class="h2">{b.heading}</h2>}
+            {b.intro && <p class="intro">{b.intro}</p>}
+          </div>
+          {button && <Button href={b.button_url} label={b.button_label} variant="secondary" />}
+        </div>
+      )
+    }
+    {
+      articles.length > 0 ? (
+        <ul class="news-list">
+          {articles.map((entry, i) => {
+            const d = entry.data;
+            const date = longDate(articleDate(d), timezone);
+            const by = creditsOf(d)[0]?.name;
+            return (
+              <li>
+                <article class="news-card">
+                  <div class="news-photo">
+                    {d.hero_image?.id ? (
+                      <Image image={d.hero_image} sizes="(min-width: 1080px) 400px, (min-width: 700px) 50vw, 100vw" priority={i === 0} style={d.hero_image_focus ? `object-position:${d.hero_image_focus}` : undefined} />
+                    ) : (
+                      <Mark aria-hidden="true" role="presentation" />
+                    )}
+                  </div>
+                  <div class="news-text">
+                    <p class="news-meta">
+                      {d.kind && <span class="tag">{d.kind}</span>}
+                      {date && <time datetime={date.iso}>{date.label}</time>}
+                      {by && <span class="news-by">{by}</span>}
+                    </p>
+                    <h3>
+                      <a href={`/news/${d.slug}`}>{d.title}</a>
+                    </h3>
+                    {d.summary && <p class="news-summary">{d.summary}</p>}
+                  </div>
+                </article>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        b.empty_text && (
+          <div class="events-empty">
+            <span>{b.empty_text}</span>
+          </div>
+        )
+      )
+    }
+  </div>
+</section>

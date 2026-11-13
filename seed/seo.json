@@ -23,6 +23,15 @@
     "pages/join": {
       "title": "Join DSA",
       "description": "Join the largest socialist organization in U.S. history and support our chapter by donating."
+    },
+    "pages/news": {
+      "title": "News",
+      "description": "Statements, resolutions, chapter documents, and writing from DSA Fort Worth members."
+    },
+    "news/how-to-publish": {
+      "title": "How to Publish a Statement, Resolution or Essay",
+      "description": "A sample article showing the DSA Fort Worth article template: headline, hero photo, table of contents, pull quotes, photos and a call to action.",
+      "noIndex": true
     }
   },
   "redirects": []

@@ -58,6 +58,22 @@
       "entry": "pages/about-us",
       "field": "hero_image",
       "focus": "55% 55%"
+    },
+    {
+      "file": "general-meeting-finns-place.jpg",
+      "alt": "DSA Fort Worth members listening to a speaker at a general meeting at Finn’s Place",
+      "credit": "DSA Fort Worth (chapter photo)",
+      "entry": "news/how-to-publish",
+      "field": "hero_image",
+      "focus": "50% 45%"
+    },
+    {
+      "file": "chapter-group-photo.jpg",
+      "alt": "DSA Fort Worth members raising their fists together outside a general meeting",
+      "credit": "DSA Fort Worth (chapter photo)",
+      "entry": "news/how-to-publish",
+      "block": "photo",
+      "field": "image"
     }
   ]
 }

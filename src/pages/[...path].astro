@@ -1,11 +1,14 @@
 ---
 // Every page except Home. EmDash matches the path against each collection's URL pattern (Pages at
-// /{slug}) and loads the entry, or a draft on a signed preview link.
+// /{slug}, News articles at /news/{slug}) and loads the entry, or a draft on a signed preview
+// link. Articles get the article template; everything else is a hero over page blocks.
 import { resolveEmDashPath } from "emdash";
 import Base from "@/layouts/Base.astro";
 import Hero from "@/components/shell/Hero.astro";
 import PageBlocks from "@/components/blocks/PageBlocks.astro";
+import Article from "@/components/article/Article.astro";
 import { seoFor, type Entry } from "@/lib/site";
+import { articleMeta } from "@/lib/article";
 import { faqPage } from "@/lib/schema";
 
 const path = `/${Astro.params.path ?? ""}`;
@@ -14,9 +17,18 @@ if (!found) return Astro.rewrite("/404");
 const entry = found.entry as unknown as Entry;
 const d = entry.data;
 const seo = await seoFor(Astro, entry, path);
+const isArticle = found.collection === "news";
 ---
 
-<Base {...seo} content={{ collection: found.collection, id: d.id, slug: d.slug }} schema={[faqPage(d.content)]}>
-  <Hero entry={entry} variant="page" />
-  <PageBlocks blocks={d.content} edit={entry.edit?.content} />
+<Base {...seo} content={{ collection: found.collection, id: d.id, slug: d.slug }} schema={isArticle ? [] : [faqPage(d.content)]} article={isArticle ? articleMeta(d) : undefined}>
+  {
+    isArticle ? (
+      <Article entry={entry} />
+    ) : (
+      <>
+        <Hero entry={entry} variant="page" />
+        <PageBlocks blocks={d.content} edit={entry.edit?.content} />
+      </>
+    )
+  }
 </Base>

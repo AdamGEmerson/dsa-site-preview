@@ -25,8 +25,8 @@ function memo<T>(Astro: Astro, key: string, load: () => Promise<T>): Promise<T> 
 // ---------------------------------------------------------------- URLs
 /** Searchable collections and their public URLs, for WebMcpSearch. Its result URLs ignore each
  *  collection's urlPattern, so every searchable collection needs an entry here. */
-export const searchCollections = ["pages"];
-export const searchRouteMap = { pages: "/:slug" };
+export const searchCollections = ["pages", "news"];
+export const searchRouteMap = { pages: "/:slug", news: "/news/:slug" };
 
 /** External links open in the same tab but are marked for screen readers and styling. */
 export const isExternal = (href: string) => /^https?:\/\//.test(href) && !/^https?:\/\/(www\.)?dsafw\.com(\/|$)/.test(href);
@@ -69,8 +69,9 @@ export type PageSeo = { title: string; description?: string; canonical: string; 
 
 /**
  * SEO for a content page through EmDash: the entry's SEO panel (title, description, image, canonical,
- * "Hide from search engines"), falling back to the H1. Pages read "{page} | DSA Fort Worth"; the
- * homepage leads with the chapter name: "DSA Fort Worth | {panel title}".
+ * "Hide from search engines"), falling back to the H1 and subtitle (an article's headline and
+ * summary). Pages read "{page} | DSA Fort Worth"; the homepage leads with the chapter name:
+ * "DSA Fort Worth | {panel title}".
  */
 export async function seoFor(Astro: Astro, entry: Entry, path: string): Promise<PageSeo> {
   const { siteTitle, separator, siteUrl } = await useSettings(Astro);
@@ -80,8 +81,8 @@ export async function seoFor(Astro: Astro, entry: Entry, path: string): Promise<
     titleSeparator: separator,
     siteUrl,
     path,
-    defaultTitle: entry.data.h1 || undefined,
-    defaultDescription: entry.data.lead || undefined,
+    defaultTitle: entry.data.h1 || entry.data.title || undefined,
+    defaultDescription: entry.data.lead || entry.data.summary || undefined,
     defaultOgImage: `${siteUrl}/og-default.png`,
   });
   return {

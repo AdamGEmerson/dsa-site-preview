@@ -1,0 +1,10 @@
+---
+// Rich-text paragraphs and headings inside an article: EmDash's own renderer, plus the link anchor
+// that prepareBody (lib/article.ts) gave each Heading 2 and Heading 3, as the element's id.
+import { emdashComponents } from "emdash/ui";
+// Its props don't list `id`, but it passes extra attributes through to the element
+const Block = emdashComponents.block as any;
+const { node, ...rest } = Astro.props as { node: Record<string, any> };
+---
+
+<Block node={node} {...rest} id={node.anchor}><slot /></Block>

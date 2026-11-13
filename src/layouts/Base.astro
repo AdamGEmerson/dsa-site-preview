@@ -18,16 +18,20 @@ interface Props extends PageSeo {
   content?: { collection: string; id: string; slug?: string | null };
   /** Page-level JSON-LD nodes; the Organization node is always included */
   schema?: (Record<string, unknown> | null)[];
+  /** A News article's dates and author: EmDash then marks the page up as an article (Open Graph
+   *  article tags and BlogPosting JSON-LD) instead of a website */
+  article?: { publishedTime?: string; modifiedTime?: string; author?: string };
 }
 
-const { title, description, canonical, image, robots, content, schema = [] } = Astro.props;
+const { title, description, canonical, image, robots, content, schema = [], article } = Astro.props;
 const site = Astro.site!;
 const chapter = await useChapter(Astro);
 
 const page = createPublicPageContext({
   Astro,
   kind: content ? "content" : "custom",
-  pageType: "website",
+  pageType: article ? "article" : "website",
+  articleMeta: article,
   title,
   pageTitle: title,
   description: description || undefined,

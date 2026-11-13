@@ -11,7 +11,8 @@ import { menu, useChapter } from "@/lib/site";
 const nav = await menu(Astro, "primary");
 const chapter = await useChapter(Astro);
 const here = Astro.url.pathname.replace(/\/$/, "") || "/";
-const current = (href: string) => (href === here ? "page" : undefined);
+// A page's link is also current on the pages under it (News on /news/an-article)
+const current = (href: string) => (href === here || (href.startsWith("/") && href.length > 1 && here.startsWith(`${href}/`)) ? "page" : undefined);
 ---
 
 <header class="site-header" data-header>

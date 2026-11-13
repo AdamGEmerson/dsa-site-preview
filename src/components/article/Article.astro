@@ -1,0 +1,110 @@
+---
+// The article template (News: statements, resolutions, bylaws, essays), top to
+// bottom: a red header with the kind, headline, summary, date and bylines; the hero photo in full
+// colour, overlapping the header; the body with its table of contents in the gutter; a few lines
+// about each byline that has a bio or picture; and a call to action, the article's own if it has
+// one, otherwise the site-wide Get involved band.
+import { Image } from "emdash/ui";
+import Mark from "@/assets/brand/logo-icon.svg";
+import Eyebrow from "@/components/ui/Eyebrow.astro";
+import Icon from "@/components/ui/Icon.astro";
+import Callout from "@/components/blocks/Callout.astro";
+import FinalCta from "@/components/blocks/FinalCta.astro";
+import ArticleBody from "./ArticleBody.astro";
+import Toc from "./Toc.astro";
+import { isExternal, useSettings, type Entry } from "@/lib/site";
+import { articleDate, creditsOf, longDate, prepareBody } from "@/lib/article";
+
+const { entry } = Astro.props as { entry: Entry };
+const d = entry.data;
+const edit = entry.edit ?? {};
+const { timezone } = await useSettings(Astro);
+
+const { blocks, toc } = prepareBody(d.body);
+const hasToc = toc.length >= 2;
+const hasPhoto = Boolean(d.hero_image?.id);
+const date = longDate(articleDate(d), timezone);
+const credits = creditsOf(d);
+const profiles = credits.filter((c) => c.bio || c.avatar);
+const summary = ((d.summary as string) ?? "").split(/\n\s*\n/).map((para) => para.trim()).filter(Boolean);
+---
+
+<article class="article">
+  <header class:list={["hero page article-hero", { "with-photo": hasPhoto }]}>
+    <Mark class="hero-mark" aria-hidden="true" role="presentation" />
+    <div class="wrap hero-inner">
+      <div>
+        <Eyebrow text={d.kind} />
+        <h1 id="h1" class="display h1" {...edit.title}>{d.title}</h1>
+        {summary.length > 0 && <div class="hero-lead" {...edit.summary}>{summary.map((para) => <p class="lead">{para}</p>)}</div>}
+        {
+          (date || credits.length > 0) && (
+            <p class="article-meta">
+              {date && <time datetime={date.iso}>{date.label}</time>}
+              {credits.map((c) => (
+                <span>
+                  {c.name}
+                  {c.role && <span class="role">, {c.role}</span>}
+                </span>
+              ))}
+            </p>
+          )
+        }
+      </div>
+    </div>
+  </header>
+
+  {
+    hasPhoto && (
+      <figure class="wrap article-hero-photo">
+        <div class="frame" {...edit.hero_image}>
+          <Image image={d.hero_image} priority sizes="(min-width: 1340px) 1240px, 100vw" style={d.hero_image_focus ? `object-position:${d.hero_image_focus}` : undefined} />
+        </div>
+        {d.hero_image.caption && <figcaption>{d.hero_image.caption}</figcaption>}
+      </figure>
+    )
+  }
+
+  <div class:list={["wrap article-layout", { "has-toc": hasToc }]}>
+    {hasToc && <Toc items={toc} />}
+    <ArticleBody blocks={blocks} edit={edit.body} />
+    <footer class="article-foot">
+      {
+        profiles.length > 0 && (
+          <ul class="article-authors">
+            {profiles.map((c) => (
+              <li>
+                {c.avatar && <Image image={c.avatar} width={144} height={144} class="avatar" />}
+                <div>
+                  <p class="author-name">
+                    {c.name}
+                    {c.role && <span class="role">{c.role}</span>}
+                  </p>
+                  {c.bio && <p>{c.bio}</p>}
+                  {c.website && (
+                    <p>
+                      <a href={c.website} rel={isExternal(c.website) ? "noopener" : undefined}>
+                        {c.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}
+                      </a>
+                    </p>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      <p class="article-back">
+        <a href="/news"><Icon name="arrow" class="flip-x" /><span>All News</span></a>
+      </p>
+    </footer>
+  </div>
+</article>
+
+{
+  d.cta_heading ? (
+    <Callout block={{ _key: "article-cta", tone: "red", eyebrow: d.cta_eyebrow, heading: d.cta_heading, body: d.cta_text, buttons: d.cta_buttons }} />
+  ) : (
+    <FinalCta />
+  )
+}

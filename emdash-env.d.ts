@@ -221,6 +221,21 @@ export interface HomepageContentContactV1Block {
 
 export type HomepageContentContactBlock = HomepageContentContactV1Block;
 
+export interface HomepageContentNewsListV1Block {
+  _type: "news_list";
+  _version: 1;
+  _key: string;
+  "eyebrow"?: string | null;
+  "heading"?: string | null;
+  "intro"?: string | null;
+  "count"?: number | null;
+  "button_label"?: string | null;
+  "button_url"?: string | null;
+  "empty_text"?: string | null;
+}
+
+export type HomepageContentNewsListBlock = HomepageContentNewsListV1Block;
+
 export interface HomepageContentFinalCtaV1Block {
   _type: "final_cta";
   _version: 1;
@@ -231,7 +246,7 @@ export interface HomepageContentFinalCtaV1Block {
 
 export type HomepageContentFinalCtaBlock = HomepageContentFinalCtaV1Block;
 
-export type HomepageContentBlock = HomepageContentSplitBlock | HomepageContentCalloutBlock | HomepageContentEventsBlock | HomepageContentFeaturedEventsBlock | HomepageContentEventListBlock | HomepageContentGroupsBlock | HomepageContentEmbedFormBlock | HomepageContentNoticeBlock | HomepageContentLogosBlock | HomepageContentCardsBlock | HomepageContentChecklistBlock | HomepageContentFaqBlock | HomepageContentTextBlock | HomepageContentGalleryBlock | HomepageContentContactBlock | HomepageContentFinalCtaBlock;
+export type HomepageContentBlock = HomepageContentSplitBlock | HomepageContentCalloutBlock | HomepageContentEventsBlock | HomepageContentFeaturedEventsBlock | HomepageContentEventListBlock | HomepageContentGroupsBlock | HomepageContentEmbedFormBlock | HomepageContentNoticeBlock | HomepageContentLogosBlock | HomepageContentCardsBlock | HomepageContentChecklistBlock | HomepageContentFaqBlock | HomepageContentTextBlock | HomepageContentGalleryBlock | HomepageContentContactBlock | HomepageContentNewsListBlock | HomepageContentFinalCtaBlock;
 
 export interface Homepage {
   id: string;
@@ -473,6 +488,21 @@ export interface PageContentContactV1Block {
 
 export type PageContentContactBlock = PageContentContactV1Block;
 
+export interface PageContentNewsListV1Block {
+  _type: "news_list";
+  _version: 1;
+  _key: string;
+  "eyebrow"?: string | null;
+  "heading"?: string | null;
+  "intro"?: string | null;
+  "count"?: number | null;
+  "button_label"?: string | null;
+  "button_url"?: string | null;
+  "empty_text"?: string | null;
+}
+
+export type PageContentNewsListBlock = PageContentNewsListV1Block;
+
 export interface PageContentFinalCtaV1Block {
   _type: "final_cta";
   _version: 1;
@@ -483,7 +513,7 @@ export interface PageContentFinalCtaV1Block {
 
 export type PageContentFinalCtaBlock = PageContentFinalCtaV1Block;
 
-export type PageContentBlock = PageContentSplitBlock | PageContentCalloutBlock | PageContentEventsBlock | PageContentFeaturedEventsBlock | PageContentEventListBlock | PageContentGroupsBlock | PageContentEmbedFormBlock | PageContentNoticeBlock | PageContentLogosBlock | PageContentCardsBlock | PageContentChecklistBlock | PageContentFaqBlock | PageContentTextBlock | PageContentGalleryBlock | PageContentContactBlock | PageContentFinalCtaBlock;
+export type PageContentBlock = PageContentSplitBlock | PageContentCalloutBlock | PageContentEventsBlock | PageContentFeaturedEventsBlock | PageContentEventListBlock | PageContentGroupsBlock | PageContentEmbedFormBlock | PageContentNoticeBlock | PageContentLogosBlock | PageContentCardsBlock | PageContentChecklistBlock | PageContentFaqBlock | PageContentTextBlock | PageContentGalleryBlock | PageContentContactBlock | PageContentNewsListBlock | PageContentFinalCtaBlock;
 
 export interface Page {
   id: string;
@@ -509,6 +539,60 @@ export interface Page {
   terms?: Record<string, TaxonomyTerm[]>;
 }
 
+export interface NewBodyArticleTextV1Block {
+  _type: "article_text";
+  _version: 1;
+  _key: string;
+  "body"?: PortableTextBlock[] | null;
+}
+
+export type NewBodyArticleTextBlock = NewBodyArticleTextV1Block;
+
+export interface NewBodyPullQuoteV1Block {
+  _type: "pull_quote";
+  _version: 1;
+  _key: string;
+  "quote": string;
+  "attribution"?: string | null;
+}
+
+export type NewBodyPullQuoteBlock = NewBodyPullQuoteV1Block;
+
+export interface NewBodyArticlePhotoV1Block {
+  _type: "article_photo";
+  _version: 1;
+  _key: string;
+  "image"?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } } | null;
+  "caption"?: string | null;
+}
+
+export type NewBodyArticlePhotoBlock = NewBodyArticlePhotoV1Block;
+
+export type NewBodyBlock = NewBodyArticleTextBlock | NewBodyPullQuoteBlock | NewBodyArticlePhotoBlock;
+
+export interface New {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  kind?: "Article" | "Essay" | "Statement" | "Resolution" | "Bylaws" | "Policy" | "Report" | "Announcement";
+  summary?: string;
+  date?: string;
+  hero_image?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } };
+  hero_image_focus?: string;
+  body?: NewBodyBlock[];
+  cta_eyebrow?: string;
+  cta_heading?: string;
+  cta_text?: PortableTextBlock[];
+  cta_buttons?: { "label": string; "url": string; "style"?: "primary" | "secondary" | null }[];
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  byline?: BylineSummary | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
 export interface Chapter {
   id: string;
   slug: string | null;
@@ -523,8 +607,8 @@ export interface Chapter {
   dsa_101_url?: string;
   donate_url?: string;
   email?: string;
-  social?: { "network"?: "instagram" | "facebook" | "x" | "bluesky" | "tiktok" | "youtube" | "threads" | null; "url": string }[];
   event_categories?: { "name": string; "keywords": string; "members_only"?: boolean | null }[];
+  social?: { "network"?: "instagram" | "facebook" | "x" | "bluesky" | "tiktok" | "youtube" | "threads" | null; "url": string }[];
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -537,6 +621,7 @@ declare module "emdash" {
   interface EmDashCollections {
     homepage: Homepage;
     pages: Page;
+    news: New;
     chapter: Chapter;
   }
 }

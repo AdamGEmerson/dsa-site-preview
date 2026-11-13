@@ -54,7 +54,8 @@ for (const [ref, list] of byEntry) {
   const data = structuredClone(item.data);
   for (const p of list) {
     const value = await upload(p);
-    const target = p.block ? data.content?.find((b) => b._key === p.block) : data;
+    // Blocks live in a page's Page content or an article's Body
+    const target = p.block ? [...(data.content ?? []), ...(data.body ?? [])].find((b) => b._key === p.block) : data;
     if (!target) throw new Error(`${ref}: no block with key "${p.block}"`);
     target[p.field] = value;
     if (p.focus) target[`${p.field}_focus`] = p.focus;

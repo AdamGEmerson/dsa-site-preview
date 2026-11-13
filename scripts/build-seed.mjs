@@ -4,8 +4,8 @@
 //   npm run build-seed      # writes seed/seed.json and validates it
 //   npm run sync-seed       # pushes schema and new entries to a running site (see that script)
 //
-// Text helpers: p() paragraph, li() bullet, h2()/h3() headings; [label](url) inside text becomes a
-// link. b(type, key, data) makes a page-content block; keep keys stable (photos.json targets them).
+// Text helpers: p() paragraph (p(text, "blockquote") for a quotation), li() bullet, h2()/h3()
+// headings; [label](url) inside text becomes a link. b(type, key, data) makes a page-content block; keep keys stable (photos.json targets them).
 import fs from "node:fs";
 
 let k = 0;
@@ -46,8 +46,8 @@ const DUES_WAIVER = "https://dsausa.org/dueswaiver";
 // ------------------------------------------------------------------ field helpers
 const f = (slug, label, type, extra = {}) => ({ slug, label, type, ...extra });
 const sel = (slug, label, options, extra = {}) => f(slug, label, "select", { validation: { options }, ...extra });
-const buttons = (label = "Buttons") =>
-  f("buttons", label, "repeater", {
+const buttons = (label = "Buttons", slug = "buttons") =>
+  f(slug, label, "repeater", {
     validation: {
       subFields: [
         f("label", "Label", "string", { required: true }),
@@ -236,12 +236,38 @@ const blockTypes = [
     f("form_label", "Form button label", "string"),
     f("form_url", "Form link (Solidarity Tech form page)", "url"),
   ]),
+  block("news_list", "News list", "Articles from News as cards (photo, kind, date, headline, summary), newest first. Leave the count blank to list them all, as the News page does; set it to show only the latest few, with a button to the rest.", "Automatic", [
+    f("eyebrow", "Eyebrow", "string"),
+    f("heading", "Heading (optional)", "string"),
+    f("intro", "Intro", "text"),
+    f("count", "How many articles (blank lists them all)", "integer", { validation: { min: 1, max: 100 } }),
+    f("button_label", "Button label, e.g. See All News", "string"),
+    f("button_url", "Button link, e.g. /news", "string"),
+    f("empty_text", "Shown when nothing has been published yet", "string"),
+  ]),
   block("final_cta", "Get involved band", "The site-wide closing call to action. Its wording lives in Sections → “Final call to action”, so one edit changes every page.", "Automatic", [
     f("image", "Background photo (optional; duotoned into red)", "image"),
     f("image_focus", 'Background photo: focal point (CSS object-position, e.g. "50% 30%")', "string"),
   ]),
 ];
 const allowedTypes = blockTypes.map((b) => b.slug);
+
+// Blocks for a News article's body. They sit in the reading column, not in
+// full-width bands, so pages can't use them and articles can't use the page blocks.
+const articleBlockTypes = [
+  block("article_text", "Text", "Rich text: paragraphs, headings, lists, block quotes, links and inline images. Every Heading 2 and Heading 3 is listed in the table of contents beside the article, so use them for the sections a reader would want to jump to.", "Article", [
+    f("body", "Text", "portableText"),
+  ]),
+  block("pull_quote", "Pull quote", "A line worth repeating, set large between two rules. One or two sentences; no quotation marks needed.", "Article", [
+    f("quote", "Quote", "text", { required: true }),
+    f("attribution", "Who said it, or where it's from (optional)", "string"),
+  ]),
+  block("article_photo", "Photo", "A photo across the reading column, with an optional caption underneath. Set the photo's alt text: what's in the picture. Hidden until it has a photo.", "Article", [
+    f("image", "Photo", "image"),
+    f("caption", "Caption (optional)", "string"),
+  ]),
+];
+const articleTypes = articleBlockTypes.map((b) => b.slug);
 
 // ------------------------------------------------------------------ collections
 const hero = [
@@ -283,6 +309,30 @@ const collections = [
     sortOrder: 2,
     supports: ["drafts", "revisions", "preview", "seo", "search"],
     fields: [f("title", "Title", "string", { required: true, searchable: true }), ...hero, content],
+  },
+  {
+    slug: "news",
+    label: "News",
+    labelSingular: "Article",
+    description: "Statements, resolutions, bylaws, essays and other long reads, at /news/{slug}: a headline over an optional hero photo, the text with a table of contents beside it, and a closing call to action. The News page (/news) lists them all, newest first. Credit who wrote or issued an article in its Bylines panel (profiles live under Bylines in the admin).",
+    icon: "newspaper",
+    titleField: "title",
+    urlPattern: "/news/{slug}",
+    sortOrder: 3,
+    supports: ["drafts", "revisions", "preview", "seo", "search"],
+    fields: [
+      f("title", "Headline", "string", { required: true, searchable: true }),
+      sel("kind", "Kind (the small label above the headline)", ["Article", "Essay", "Statement", "Resolution", "Bylaws", "Policy", "Report", "Announcement"]),
+      f("summary", "Summary (under the headline, on the News page, and in search and link previews)", "text", { searchable: true }),
+      f("date", "Date issued or adopted (blank uses the day it was published)", "datetime"),
+      f("hero_image", "Hero photo (optional; also the picture on the News page. Set its alt text and, if you like, a caption)", "image"),
+      f("hero_image_focus", 'Hero photo: focal point (CSS object-position, e.g. "50% 30%")', "string"),
+      f("body", "Body", "blocks", { validation: { allowedTypes: articleTypes, maxItems: 60 } }),
+      f("cta_eyebrow", "Call to action: sticker (optional, two or three words, e.g. Take Action)", "string", { validation: { maxLength: 24 } }),
+      f("cta_heading", "Call to action: heading (blank shows the site-wide Get involved band instead)", "string"),
+      f("cta_text", "Call to action: text", "portableText"),
+      buttons("Call to action: buttons (a path like /join or a full link to another site)", "cta_buttons"),
+    ],
   },
   {
     slug: "chapter",
@@ -376,13 +426,14 @@ const menus = [
     label: "Header",
     items: [
       c("Events", "/events"),
+      c("News", "/news"),
       c("About Us", "/about-us"),
       c("Our Work", "/our-work", [c("Campaigns", "/our-work#campaigns"), c("Working Groups", "/our-work#working-groups"), c("Committees", "/our-work#committees")]),
       c("Resources", "/resources", [c("Bylaws", "/resources#bylaws"), c("Endorsements", "/resources#endorsements"), c("Chapter Structure", "/about-us#how-our-chapter-works"), c("Code of Conduct", "/resources#code-of-conduct"), c("Donate", "/join#donate")]),
     ],
   },
   { name: "footer_organize", label: "Footer: Organize", items: [c("Events", "/events"), c("Campaigns", "/our-work#campaigns"), c("Working Groups", "/our-work#working-groups"), c("Committees", "/our-work#committees")] },
-  { name: "footer_learn", label: "Footer: Learn", items: [c("About Us", "/about-us"), c("Our Work", "/our-work"), c("Resources", "/resources"), c("DSA 101", DSA101)] },
+  { name: "footer_learn", label: "Footer: Learn", items: [c("About Us", "/about-us"), c("Our Work", "/our-work"), c("News", "/news"), c("Resources", "/resources"), c("DSA 101", DSA101)] },
   { name: "footer_connect", label: "Footer: Connect", items: [c("Join DSA", "/join"), c("Get Involved", GET_INVOLVED), c("Newsletter", NEWSLETTER), c("Full Calendar", CALENDAR)] },
 ];
 
@@ -886,6 +937,108 @@ const joinPage = {
   },
 };
 
+const newsPage = {
+  id: "pages-news",
+  slug: "news",
+  status: "published",
+  data: {
+    title: "News",
+    eyebrow: "News",
+    h1: "News From DSA Fort Worth",
+    lead: "Statements, resolutions, chapter documents, and writing from our members.",
+    hero_image_brief: "",
+    content: [
+      b("news_list", "news-list", {
+        eyebrow: "",
+        heading: "",
+        intro: "",
+        button_label: "",
+        button_url: "",
+        empty_text: "Nothing has been published here yet. Check back soon.",
+      }),
+      b("final_cta", "final-cta", {}),
+    ],
+  },
+};
+
+// A sample article that doubles as the editors' guide to the template. Delete it once there are
+// real articles; it is hidden from search engines (seed/seo.json).
+const sampleArticle = {
+  id: "news-how-to-publish",
+  slug: "how-to-publish",
+  status: "published",
+  bylines: [{ byline: "communications-and-design-committee" }],
+  data: {
+    title: "How to Publish a Statement, Resolution or Essay",
+    kind: "Article",
+    summary: "Everything on this page is the article template at work: the headline and summary, the hero photo, the table of contents, pull quotes, photos, and a call to action of its own. Here is how each part is made.",
+    date: "2026-11-13T12:00:00-06:00",
+    body: [
+      b("article_text", "intro", {
+        body: [
+          p("Articles live in the admin under News, and each one is listed on the [News page](/news), newest first. One template covers the chapter’s public statements, resolutions, bylaws, essays and reports, so a reader always finds the same things in the same places. Nothing below is required except a headline; a two-paragraph statement and a forty-section set of bylaws both fit."),
+          h2("The top of the page"),
+          p("The red header carries four things, all optional except the headline."),
+          li("Kind: the small label above the headline (Statement, Resolution, Bylaws and so on)."),
+          li("Headline and summary: the summary is also what the News page, search engines and link previews show."),
+          li("Date: the day a document was issued or adopted. Leave it blank to use the day you publish."),
+          li("Bylines: who wrote or issued it, picked in the article’s Bylines panel. More on those below."),
+          li("Hero photo: shown in full colour under the headline, and on the article’s card on the News page. Without one, the page simply starts with the text."),
+          h2("Writing the body"),
+          p("The body is a list of blocks. Most articles need only one: a Text block holding the whole piece. Add a Pull quote or Photo block wherever the text should pause, then carry on in another Text block."),
+          h3("Headings build the table of contents"),
+          p("Every Heading 2 and Heading 3 in a Text block is listed in the table of contents beside the article, and each gets its own link, so you can send someone straight to a section. For bylaws, use Heading 2 for each article and Heading 3 for each section."),
+          p("The table of contents follows the reader: the red line and marker show how far down the page they are, and the current section is highlighted. On a phone it folds into a bar under the header. An article with fewer than two headings has no table of contents at all."),
+          h3("Quoting a source"),
+          p("To quote a document or a person at length, use the Quote style inside the text. It reads as a quotation, not as a headline:"),
+          p("Democratic socialists believe that both the economy and society should be run democratically, to meet public needs, not to make profits for a few.", "blockquote"),
+        ],
+      }),
+      b("pull_quote", "pull-quote", {
+        quote: "A pull quote repeats the one line you want a skimming reader to leave with.",
+        attribution: "Use them sparingly",
+      }),
+      b("article_text", "media", {
+        body: [
+          h2("Pull quotes and photos"),
+          p("A pull quote is its own block: type the line, and add who said it if it needs saying. Photos can go in two ways. A Photo block sets a picture across the column with a caption. Inside a Text block, the editor’s image button drops a picture between paragraphs."),
+          p("Either way, write alt text for every photo. Describe what is in the picture for someone who can’t see it."),
+        ],
+      }),
+      b("article_photo", "photo", {
+        caption: "A Photo block, with its caption. Photos keep their own shape; nothing is cropped.",
+      }),
+      b("article_text", "closing", {
+        body: [
+          h2("Bylines"),
+          p("A byline is a profile under Bylines in the admin: a name, and optionally a short bio, a picture and a website. It can be a person or a body of the chapter, such as the Steering Committee. Make the profile once, then credit it on any article from that article’s Bylines panel."),
+          p("Credits show under the headline and on the News page. Any byline with a bio or a picture also gets a short introduction at the end of the article. An article can carry several, each with a role if it helps: Photographer, Translator, Editor."),
+          h2("The call to action"),
+          p("Each article ends with a red band. Give it a heading, a sentence or two, and up to two buttons, and it becomes this article’s own ask: sign the petition the statement is about, come to the meeting where the resolution will be voted on, read the full document on another site. A button can point anywhere, on this site or off it."),
+          p("Leave the heading blank and the article ends with the same Get involved band as every other page."),
+          h2("Before you publish"),
+          li("Read the summary on its own. Would it make sense in a search result?"),
+          li("Check the table of contents. If a heading there wouldn’t help a reader find their way, it should be bold text instead."),
+          li("Open the preview on a phone."),
+          p("This page is a sample. Once the first real article is up, delete it from News."),
+        ],
+      }),
+    ],
+    cta_eyebrow: "Your Turn",
+    cta_heading: "Have Something the Chapter Should Publish?",
+    cta_text: [p("Statements and resolutions go through the membership. Essays, reports and event write-ups go through the Communications and Design Committee. Tell us what you’re working on.")],
+    cta_buttons: [btn("Get Involved", GET_INVOLVED), btn("See How We Decide", "/about-us#how-our-chapter-works", "secondary")],
+  },
+};
+
+// Byline profiles (Bylines in the admin): the people and chapter bodies an article can be credited
+// to. These three are the bodies that issue most chapter documents; members add their own.
+const bylines = [
+  { id: "dsa-fort-worth", slug: "dsa-fort-worth", displayName: "DSA Fort Worth", bio: "Tarrant County’s democratic socialists. Member-funded, member-led.", isGuest: true },
+  { id: "steering-committee", slug: "steering-committee", displayName: "Steering Committee", bio: "DSA Fort Worth’s Steering Committee is composed of ten officers elected by the chapter’s members.", isGuest: true },
+  { id: "communications-and-design-committee", slug: "communications-and-design-committee", displayName: "Communications and Design Committee", bio: "The Communications and Design Committee shapes how DSA Fort Worth communicates with members, supporters, and the broader public.", isGuest: true },
+];
+
 const chapter = {
   id: "chapter-fort-worth",
   slug: "fort-worth",
@@ -919,11 +1072,12 @@ const seed = {
   version: "1",
   meta: { name: "DSA Fort Worth", description: "dsafw.com: schema, block types, sections, menus and the homepage.", author: "DSA Fort Worth" },
   settings: { title: "DSA Fort Worth", tagline: "Building Socialism Across Tarrant County", url: "https://dsafw.com", timezone: "America/Chicago", seo: { titleSeparator: "|" } },
-  blockTypes,
+  blockTypes: [...blockTypes, ...articleBlockTypes],
   collections,
   sections,
   menus,
-  content: { homepage: [home], pages: [eventsPage, ourWorkPage, aboutPage, resourcesPage, joinPage], chapter: [chapter] },
+  bylines,
+  content: { homepage: [home], pages: [eventsPage, ourWorkPage, aboutPage, resourcesPage, joinPage, newsPage], news: [sampleArticle], chapter: [chapter] },
 };
 
 const out = process.argv[2] ?? new URL("../seed/seed.json", import.meta.url);

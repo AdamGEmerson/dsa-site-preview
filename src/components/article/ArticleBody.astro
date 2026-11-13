@@ -1,0 +1,51 @@
+---
+// An article's Body blocks, in order, down the reading column: rich text, pull quotes and photos.
+// The blocks come from prepareBody (lib/article.ts), which has put a link anchor on each heading.
+import { Image, PortableText } from "emdash/ui";
+import Heading from "./Heading.astro";
+import UnknownBlock from "@/components/blocks/UnknownBlock.astro";
+import type { BodyBlock } from "@/lib/article";
+
+interface Props {
+  blocks: BodyBlock[];
+  edit?: Record<string, string>; // visual-editing attributes for the body field
+}
+const { blocks, edit } = Astro.props;
+const editor = Boolean(Astro.locals.user);
+---
+
+<div class="article-body" data-article-body {...edit}>
+  {
+    blocks.map((b) =>
+      b._type === "article_text" ? (
+        Array.isArray(b.body) && b.body.length > 0 && (
+          <div class="prose">
+            <PortableText value={b.body} components={{ block: Heading }} />
+          </div>
+        )
+      ) : b._type === "pull_quote" ? (
+        b.quote && (
+          <figure class="pull-quote">
+            <blockquote>
+              <p>{b.quote}</p>
+            </blockquote>
+            {b.attribution && <figcaption>{b.attribution}</figcaption>}
+          </figure>
+        )
+      ) : b._type === "article_photo" ? (
+        b.image?.id ? (
+          <figure class="article-photo">
+            <div class="frame">
+              <Image image={b.image} sizes="(min-width: 1024px) 760px, 100vw" />
+            </div>
+            {(b.caption || b.image.caption) && <figcaption>{b.caption || b.image.caption}</figcaption>}
+          </figure>
+        ) : (
+          editor && <p class="unknown-block">This Photo block is hidden until it has a photo.</p>
+        )
+      ) : (
+        <UnknownBlock type={b._type} />
+      ),
+    )
+  }
+</div>

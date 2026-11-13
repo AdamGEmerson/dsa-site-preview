@@ -1,4 +1,5 @@
-// JSON-LD alongside EmDash's WebSite node: the chapter as an Organization, and FAQPage from FAQ blocks.
+// JSON-LD alongside EmDash's own node (WebSite, or BlogPosting on a News article): the chapter as
+// an Organization, and FAQPage from FAQ blocks.
 import type { Chapter } from "./site";
 
 type Node = Record<string, unknown>;

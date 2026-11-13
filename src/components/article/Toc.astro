@@ -1,0 +1,144 @@
+---
+// An article's table of contents. On wide screens it sits in the gutter and stays in view: a rail
+// beside the list fills in red as the reader moves down the page, a marker rides the rail, and the
+// current section is highlighted. On phones and tablets it folds into a bar under the header that
+// names the current section, shows progress through the article, and opens the list on a tap.
+// Without JavaScript it is a plain list of links above the text.
+import Icon from "@/components/ui/Icon.astro";
+import type { TocItem } from "@/lib/article";
+const { items } = Astro.props as { items: TocItem[] };
+---
+
+<nav class="toc" id="article-toc" aria-label="On this page" data-toc>
+  <button class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-panel" data-toc-toggle>
+    <span class="toc-label">On this page</span>
+    <span class="toc-current" data-toc-current>Contents</span>
+    <Icon name="chevron" class="chev" />
+  </button>
+  <p class="toc-label toc-title" aria-hidden="true">On this page</p>
+  <div class="toc-panel" id="toc-panel" data-toc-panel>
+    <div class="toc-track" data-toc-track>
+      <span class="toc-fill" aria-hidden="true"></span>
+      <span class="toc-marker" aria-hidden="true"></span>
+      <ol class="toc-list">
+        {
+          items.map((item) => (
+            <li class={`l${item.level}`}>
+              <a href={`#${item.id}`} data-toc-link>
+                {item.text}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+  <span class="toc-progress" aria-hidden="true"><span></span></span>
+</nav>
+
+<script>
+  // Scroll tracking. The "reading line" sits just under the sticky header (and, on small screens,
+  // the contents bar). The current section is the last heading to have crossed it; the rail fills
+  // to that section's entry in the list, plus however far through the section the reader is.
+  const nav = document.querySelector<HTMLElement>("[data-toc]");
+  const body = document.querySelector<HTMLElement>("[data-article-body]");
+  const links = nav ? [...nav.querySelectorAll<HTMLAnchorElement>("[data-toc-link]")] : [];
+  const heads = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))));
+
+  if (nav && body && heads.length && heads.every(Boolean)) {
+    const root = document.documentElement;
+    const header = document.querySelector<HTMLElement>("[data-header]");
+    const toggle = nav.querySelector<HTMLButtonElement>("[data-toc-toggle]")!;
+    const panel = nav.querySelector<HTMLElement>("[data-toc-panel]")!;
+    const track = nav.querySelector<HTMLElement>("[data-toc-track]")!;
+    const current = nav.querySelector<HTMLElement>("[data-toc-current]")!;
+    const items = links.map((a) => a.parentElement as HTMLElement);
+    const wide = matchMedia("(min-width: 1024px)");
+    const clamp = (n: number) => Math.min(1, Math.max(0, n));
+    let active = -2;
+    let queued = false;
+
+    const setOpen = (open: boolean) => {
+      nav.classList.toggle("is-open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      // The list has no size while it is closed, so place the rail now
+      if (open) update();
+    };
+
+    const update = () => {
+      queued = false;
+      const headerHeight = header?.offsetHeight ?? 0;
+      root.style.setProperty("--header-h", `${headerHeight}px`);
+      // Where a heading lands after a jump link (scroll-padding + its scroll-margin), plus a hair
+      const first = heads[0]!;
+      const line = (parseFloat(getComputedStyle(root).scrollPaddingTop) || 0) + (parseFloat(getComputedStyle(first).scrollMarginTop) || 0) + 8;
+
+      const tops = heads.map((h) => h!.getBoundingClientRect().top);
+      const box = body.getBoundingClientRect();
+      const atEnd = window.innerHeight + window.scrollY >= root.scrollHeight - 2;
+      let index = -1;
+      tops.forEach((top, i) => {
+        if (top <= line) index = i;
+      });
+      if (atEnd && box.bottom <= window.innerHeight) index = heads.length - 1;
+
+      // Rail: down to the current entry, then through it in step with the section
+      let y = 0;
+      if (index >= 0) {
+        const start = tops[index]!;
+        const end = index + 1 < tops.length ? tops[index + 1]! : box.bottom;
+        const through = atEnd && index === heads.length - 1 ? 1 : clamp((line - start) / Math.max(1, end - start));
+        const item = items[index]!;
+        y = item.offsetTop + through * item.offsetHeight;
+      }
+      track.style.setProperty("--y", `${y.toFixed(1)}px`);
+      // Bar (small screens): the whole article
+      const overall = atEnd ? 1 : clamp((line - box.top) / Math.max(1, box.height));
+      nav.style.setProperty("--progress", overall.toFixed(4));
+
+      if (index === active) return;
+      active = index;
+      items.forEach((li, i) => {
+        li.classList.toggle("is-read", i < index);
+        li.classList.toggle("is-active", i === index);
+      });
+      links.forEach((a, i) => (i === index ? a.setAttribute("aria-current", "location") : a.removeAttribute("aria-current")));
+      nav.classList.toggle("is-started", index >= 0);
+      current.textContent = index >= 0 ? links[index]!.textContent!.trim() : "Contents";
+      // Keep the current entry in view when the list is taller than the screen
+      if (index >= 0 && wide.matches && panel.scrollHeight > panel.clientHeight) {
+        const item = items[index]!;
+        panel.scrollTo({ top: item.offsetTop - panel.clientHeight / 2 + item.offsetHeight / 2 });
+      }
+    };
+    const request = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    };
+
+    toggle.addEventListener("click", () => setOpen(!nav.classList.contains("is-open")));
+    links.forEach((a) => a.addEventListener("click", () => setOpen(false)));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && nav.classList.contains("is-open")) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    document.addEventListener("click", (e) => {
+      if (!nav.contains(e.target as Node)) setOpen(false);
+    });
+    wide.addEventListener("change", () => setOpen(false));
+
+    addEventListener("scroll", request, { passive: true });
+    addEventListener("resize", request);
+    // Photos and fonts loading move the headings
+    new ResizeObserver(request).observe(body);
+
+    nav.classList.add("is-ready");
+    update();
+  } else if (nav) {
+    // No headings to point at (e.g. while the text is open in the inline editor)
+    nav.hidden = true;
+  }
+</script>

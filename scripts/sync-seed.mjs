@@ -3,17 +3,20 @@
 //
 //   1. Block types: create missing ones; update changed ones (compatible changes only; a breaking
 //      change is reported, not forced).
-//   2. Collections: add missing fields; update a field's label, required, searchable or validation.
-//   3. Entries: create seed entries that don't exist yet (matched by collection + slug), published.
-//      On entries that do exist, fill seed fields that are still unset. Nothing set is overwritten.
-//   4. Sections: create seed sections that don't exist yet. Existing ones are left as edited.
+//   2. Collections: create missing ones; add missing fields; update a field's label, required,
+//      searchable or validation.
+//   3. Bylines: create seed byline profiles that don't exist yet (matched by slug).
+//   4. Entries: create seed entries that don't exist yet (matched by collection + slug), published,
+//      with their byline credits. On entries that do exist, fill seed fields that are still unset.
+//      Nothing set is overwritten.
+//   5. Sections: create seed sections that don't exist yet. Existing ones are left as edited.
 //      (The REST API can't mark a section as a theme section; only a new site's seed can.)
 //
 //   npm run sync-seed                                  # the local dev server (dev bypass)
 //   EMDASH_URL=… EMDASH_TOKEN=… npm run sync-seed      # any other site, with an admin API token
 //   … -- --dry-run                                     # report only
 //
-// It does not touch menus, settings, media or existing sections, and never deletes anything. Field flags are
+// It does not touch menus, settings, media, existing sections or existing bylines, and never deletes anything. Field flags are
 // compared only where the seed states them, so to drop one (e.g. required) set it to false explicitly.
 import { readFile } from "node:fs/promises";
 
@@ -72,10 +75,12 @@ for (const bt of seed.blockTypes ?? []) {
 
 // ---------------------------------------------------------------- 2. collection fields
 for (const col of seed.collections ?? []) {
-  const live = await api(`/schema/collections/${col.slug}?includeFields=true`, {}, { allow404: true });
+  let live = await api(`/schema/collections/${col.slug}?includeFields=true`, {}, { allow404: true });
   if (!live) {
-    console.warn(`! collection ${col.slug} is missing; create it in the admin (Content Types), then re-run`);
-    continue;
+    const { slug, label, labelSingular, description, icon, admin, supports, urlPattern, sortOrder } = col;
+    await write("/schema/collections", "POST", { slug, label, labelSingular, description, icon, admin, supports, urlPattern, sortOrder });
+    log(`+ collection ${col.slug}`);
+    live = dryRun ? { item: { fields: [] } } : await api(`/schema/collections/${col.slug}?includeFields=true`);
   }
   const liveFields = new Map((live.item.fields ?? []).map((f) => [f.slug, f]));
   for (const [i, field] of col.fields.entries()) {
@@ -91,12 +96,33 @@ for (const col of seed.collections ?? []) {
   }
 }
 
-// ---------------------------------------------------------------- 3. entries
+// ---------------------------------------------------------------- 3. bylines
+const bylineIds = new Map(); // seed byline id → live byline id
+if (seed.bylines?.length) {
+  const live = new Map();
+  for (let cursor; ; ) {
+    const page = await api(`/admin/bylines?limit=100${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`);
+    for (const b of page.items ?? []) live.set(b.slug, b.id);
+    if (!(cursor = page.nextCursor)) break;
+  }
+  for (const { id, slug, displayName, bio, websiteUrl, isGuest } of seed.bylines) {
+    if (!live.has(slug)) {
+      const created = await write("/admin/bylines", "POST", { slug, displayName, bio, websiteUrl, isGuest });
+      if (created) live.set(slug, (created.item ?? created).id);
+      log(`+ byline ${slug}`);
+    }
+    if (live.has(slug)) bylineIds.set(id, live.get(slug));
+  }
+}
+const credits = (entry) => (entry.bylines ?? []).filter((c) => bylineIds.has(c.byline)).map((c) => ({ bylineId: bylineIds.get(c.byline), roleLabel: c.roleLabel ?? null }));
+
+// ---------------------------------------------------------------- 4. entries
 for (const [collection, entries] of Object.entries(seed.content ?? {})) {
   for (const entry of entries) {
     const live = await api(`/content/${collection}/${entry.slug}`, {}, { allow404: true });
     if (!live) {
-      const created = await write(`/content/${collection}`, "POST", { slug: entry.slug, data: entry.data });
+      const bylines = credits(entry);
+      const created = await write(`/content/${collection}`, "POST", { slug: entry.slug, data: entry.data, ...(bylines.length ? { bylines } : {}) });
       if (created && entry.status === "published") await write(`/content/${collection}/${created.item.id}/publish`, "POST", {});
       log(`+ entry ${collection}/${entry.slug}`);
       continue;
@@ -109,7 +135,7 @@ for (const [collection, entries] of Object.entries(seed.content ?? {})) {
     log(`~ entry ${collection}/${entry.slug}: filled ${Object.keys(missing).join(", ")}`);
   }
 }
-// ---------------------------------------------------------------- 4. sections
+// ---------------------------------------------------------------- 5. sections
 for (const section of seed.sections ?? []) {
   const live = await api(`/sections/${section.slug}`, {}, { allow404: true });
   if (live) continue;

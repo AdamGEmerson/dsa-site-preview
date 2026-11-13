@@ -1058,6 +1058,59 @@
       ]
     },
     {
+      "slug": "news_list",
+      "label": "News list",
+      "description": "Articles from News as cards (photo, kind, date, headline, summary), newest first. Leave the count blank to list them all, as the News page does; set it to show only the latest few, with a button to the rest.",
+      "category": "Automatic",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "eyebrow",
+              "label": "Eyebrow",
+              "type": "string"
+            },
+            {
+              "slug": "heading",
+              "label": "Heading (optional)",
+              "type": "string"
+            },
+            {
+              "slug": "intro",
+              "label": "Intro",
+              "type": "text"
+            },
+            {
+              "slug": "count",
+              "label": "How many articles (blank lists them all)",
+              "type": "integer",
+              "validation": {
+                "min": 1,
+                "max": 100
+              }
+            },
+            {
+              "slug": "button_label",
+              "label": "Button label, e.g. See All News",
+              "type": "string"
+            },
+            {
+              "slug": "button_url",
+              "label": "Button link, e.g. /news",
+              "type": "string"
+            },
+            {
+              "slug": "empty_text",
+              "label": "Shown when nothing has been published yet",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "slug": "final_cta",
       "label": "Get involved band",
       "description": "The site-wide closing call to action. Its wording lives in Sections → “Final call to action”, so one edit changes every page.",
@@ -1075,6 +1128,74 @@
             {
               "slug": "image_focus",
               "label": "Background photo: focal point (CSS object-position, e.g. \"50% 30%\")",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "article_text",
+      "label": "Text",
+      "description": "Rich text: paragraphs, headings, lists, block quotes, links and inline images. Every Heading 2 and Heading 3 is listed in the table of contents beside the article, so use them for the sections a reader would want to jump to.",
+      "category": "Article",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "body",
+              "label": "Text",
+              "type": "portableText"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "pull_quote",
+      "label": "Pull quote",
+      "description": "A line worth repeating, set large between two rules. One or two sentences; no quotation marks needed.",
+      "category": "Article",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "quote",
+              "label": "Quote",
+              "type": "text",
+              "required": true
+            },
+            {
+              "slug": "attribution",
+              "label": "Who said it, or where it's from (optional)",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "article_photo",
+      "label": "Photo",
+      "description": "A photo across the reading column, with an optional caption underneath. Set the photo's alt text: what's in the picture. Hidden until it has a photo.",
+      "category": "Article",
+      "currentVersion": 1,
+      "versions": [
+        {
+          "version": 1,
+          "fields": [
+            {
+              "slug": "image",
+              "label": "Photo",
+              "type": "image"
+            },
+            {
+              "slug": "caption",
+              "label": "Caption (optional)",
               "type": "string"
             }
           ]
@@ -1182,6 +1303,7 @@
               "text",
               "gallery",
               "contact",
+              "news_list",
               "final_cta"
             ],
             "maxItems": 40
@@ -1287,9 +1409,135 @@
               "text",
               "gallery",
               "contact",
+              "news_list",
               "final_cta"
             ],
             "maxItems": 40
+          }
+        }
+      ]
+    },
+    {
+      "slug": "news",
+      "label": "News",
+      "labelSingular": "Article",
+      "description": "Statements, resolutions, bylaws, essays and other long reads, at /news/{slug}: a headline over an optional hero photo, the text with a table of contents beside it, and a closing call to action. The News page (/news) lists them all, newest first. Credit who wrote or issued an article in its Bylines panel (profiles live under Bylines in the admin).",
+      "icon": "newspaper",
+      "titleField": "title",
+      "urlPattern": "/news/{slug}",
+      "sortOrder": 3,
+      "supports": [
+        "drafts",
+        "revisions",
+        "preview",
+        "seo",
+        "search"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Headline",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "kind",
+          "label": "Kind (the small label above the headline)",
+          "type": "select",
+          "validation": {
+            "options": [
+              "Article",
+              "Essay",
+              "Statement",
+              "Resolution",
+              "Bylaws",
+              "Policy",
+              "Report",
+              "Announcement"
+            ]
+          }
+        },
+        {
+          "slug": "summary",
+          "label": "Summary (under the headline, on the News page, and in search and link previews)",
+          "type": "text",
+          "searchable": true
+        },
+        {
+          "slug": "date",
+          "label": "Date issued or adopted (blank uses the day it was published)",
+          "type": "datetime"
+        },
+        {
+          "slug": "hero_image",
+          "label": "Hero photo (optional; also the picture on the News page. Set its alt text and, if you like, a caption)",
+          "type": "image"
+        },
+        {
+          "slug": "hero_image_focus",
+          "label": "Hero photo: focal point (CSS object-position, e.g. \"50% 30%\")",
+          "type": "string"
+        },
+        {
+          "slug": "body",
+          "label": "Body",
+          "type": "blocks",
+          "validation": {
+            "allowedTypes": [
+              "article_text",
+              "pull_quote",
+              "article_photo"
+            ],
+            "maxItems": 60
+          }
+        },
+        {
+          "slug": "cta_eyebrow",
+          "label": "Call to action: sticker (optional, two or three words, e.g. Take Action)",
+          "type": "string",
+          "validation": {
+            "maxLength": 24
+          }
+        },
+        {
+          "slug": "cta_heading",
+          "label": "Call to action: heading (blank shows the site-wide Get involved band instead)",
+          "type": "string"
+        },
+        {
+          "slug": "cta_text",
+          "label": "Call to action: text",
+          "type": "portableText"
+        },
+        {
+          "slug": "cta_buttons",
+          "label": "Call to action: buttons (a path like /join or a full link to another site)",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "label",
+                "label": "Label",
+                "type": "string",
+                "required": true
+              },
+              {
+                "slug": "url",
+                "label": "Link (a path like /about or a full URL)",
+                "type": "string",
+                "required": true
+              },
+              {
+                "slug": "style",
+                "label": "Style",
+                "type": "select",
+                "options": [
+                  "primary",
+                  "secondary"
+                ]
+              }
+            ]
           }
         }
       ]
@@ -1752,6 +2000,11 @@
         },
         {
           "type": "custom",
+          "label": "News",
+          "url": "/news"
+        },
+        {
+          "type": "custom",
           "label": "About Us",
           "url": "/about-us"
         },
@@ -1853,6 +2106,11 @@
         },
         {
           "type": "custom",
+          "label": "News",
+          "url": "/news"
+        },
+        {
+          "type": "custom",
           "label": "Resources",
           "url": "/resources"
         },
@@ -1888,6 +2146,29 @@
           "url": "https://fortworthdsa.solidarity.tech/dsa-fort-worth-calendar"
         }
       ]
+    }
+  ],
+  "bylines": [
+    {
+      "id": "dsa-fort-worth",
+      "slug": "dsa-fort-worth",
+      "displayName": "DSA Fort Worth",
+      "bio": "Tarrant County’s democratic socialists. Member-funded, member-led.",
+      "isGuest": true
+    },
+    {
+      "id": "steering-committee",
+      "slug": "steering-committee",
+      "displayName": "Steering Committee",
+      "bio": "DSA Fort Worth’s Steering Committee is composed of ten officers elected by the chapter’s members.",
+      "isGuest": true
+    },
+    {
+      "id": "communications-and-design-committee",
+      "slug": "communications-and-design-committee",
+      "displayName": "Communications and Design Committee",
+      "bio": "The Communications and Design Committee shapes how DSA Fort Worth communicates with members, supporters, and the broader public.",
+      "isGuest": true
     }
   ],
   "content": {
@@ -3602,6 +3883,576 @@
                   "answer": "No. DSA Fort Worth is organized as a 501(c)(4), and donations are not tax-deductible."
                 }
               ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "pages-news",
+        "slug": "news",
+        "status": "published",
+        "data": {
+          "title": "News",
+          "eyebrow": "News",
+          "h1": "News From DSA Fort Worth",
+          "lead": "Statements, resolutions, chapter documents, and writing from our members.",
+          "hero_image_brief": "",
+          "content": [
+            {
+              "_type": "news_list",
+              "_version": 1,
+              "_key": "news-list",
+              "eyebrow": "",
+              "heading": "",
+              "intro": "",
+              "button_label": "",
+              "button_url": "",
+              "empty_text": "Nothing has been published here yet. Check back soon."
+            },
+            {
+              "_type": "final_cta",
+              "_version": 1,
+              "_key": "final-cta"
+            }
+          ]
+        }
+      }
+    ],
+    "news": [
+      {
+        "id": "news-how-to-publish",
+        "slug": "how-to-publish",
+        "status": "published",
+        "bylines": [
+          {
+            "byline": "communications-and-design-committee"
+          }
+        ],
+        "data": {
+          "title": "How to Publish a Statement, Resolution or Essay",
+          "kind": "Article",
+          "summary": "Everything on this page is the article template at work: the headline and summary, the hero photo, the table of contents, pull quotes, photos, and a call to action of its own. Here is how each part is made.",
+          "date": "2026-11-13T12:00:00-06:00",
+          "body": [
+            {
+              "_type": "article_text",
+              "_version": 1,
+              "_key": "intro",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b4k",
+                  "style": "normal",
+                  "markDefs": [
+                    {
+                      "_type": "link",
+                      "_key": "l4m",
+                      "href": "/news"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s4l",
+                      "text": "Articles live in the admin under News, and each one is listed on the ",
+                      "marks": []
+                    },
+                    {
+                      "_type": "span",
+                      "_key": "s4n",
+                      "text": "News page",
+                      "marks": [
+                        "l4m"
+                      ]
+                    },
+                    {
+                      "_type": "span",
+                      "_key": "s4o",
+                      "text": ", newest first. One template covers the chapter’s public statements, resolutions, bylaws, essays and reports, so a reader always finds the same things in the same places. Nothing below is required except a headline; a two-paragraph statement and a forty-section set of bylaws both fit.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b4p",
+                  "style": "h2",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s4q",
+                      "text": "The top of the page",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b4r",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s4s",
+                      "text": "The red header carries four things, all optional except the headline.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b4t",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s4u",
+                      "text": "Kind: the small label above the headline (Statement, Resolution, Bylaws and so on).",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b4v",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s4w",
+                      "text": "Headline and summary: the summary is also what the News page, search engines and link previews show.",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b4x",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s4y",
+                      "text": "Date: the day a document was issued or adopted. Leave it blank to use the day you publish.",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b4z",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s50",
+                      "text": "Bylines: who wrote or issued it, picked in the article’s Bylines panel. More on those below.",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b51",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s52",
+                      "text": "Hero photo: shown in full colour under the headline, and on the article’s card on the News page. Without one, the page simply starts with the text.",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b53",
+                  "style": "h2",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s54",
+                      "text": "Writing the body",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b55",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s56",
+                      "text": "The body is a list of blocks. Most articles need only one: a Text block holding the whole piece. Add a Pull quote or Photo block wherever the text should pause, then carry on in another Text block.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b57",
+                  "style": "h3",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s58",
+                      "text": "Headings build the table of contents",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b59",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s5a",
+                      "text": "Every Heading 2 and Heading 3 in a Text block is listed in the table of contents beside the article, and each gets its own link, so you can send someone straight to a section. For bylaws, use Heading 2 for each article and Heading 3 for each section.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b5b",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s5c",
+                      "text": "The table of contents follows the reader: the red line and marker show how far down the page they are, and the current section is highlighted. On a phone it folds into a bar under the header. An article with fewer than two headings has no table of contents at all.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b5d",
+                  "style": "h3",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s5e",
+                      "text": "Quoting a source",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b5f",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s5g",
+                      "text": "To quote a document or a person at length, use the Quote style inside the text. It reads as a quotation, not as a headline:",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b5h",
+                  "style": "blockquote",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s5i",
+                      "text": "Democratic socialists believe that both the economy and society should be run democratically, to meet public needs, not to make profits for a few.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "_type": "pull_quote",
+              "_version": 1,
+              "_key": "pull-quote",
+              "quote": "A pull quote repeats the one line you want a skimming reader to leave with.",
+              "attribution": "Use them sparingly"
+            },
+            {
+              "_type": "article_text",
+              "_version": 1,
+              "_key": "media",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b5j",
+                  "style": "h2",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s5k",
+                      "text": "Pull quotes and photos",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b5l",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s5m",
+                      "text": "A pull quote is its own block: type the line, and add who said it if it needs saying. Photos can go in two ways. A Photo block sets a picture across the column with a caption. Inside a Text block, the editor’s image button drops a picture between paragraphs.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b5n",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s5o",
+                      "text": "Either way, write alt text for every photo. Describe what is in the picture for someone who can’t see it.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "_type": "article_photo",
+              "_version": 1,
+              "_key": "photo",
+              "caption": "A Photo block, with its caption. Photos keep their own shape; nothing is cropped."
+            },
+            {
+              "_type": "article_text",
+              "_version": 1,
+              "_key": "closing",
+              "body": [
+                {
+                  "_type": "block",
+                  "_key": "b5p",
+                  "style": "h2",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s5q",
+                      "text": "Bylines",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b5r",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s5s",
+                      "text": "A byline is a profile under Bylines in the admin: a name, and optionally a short bio, a picture and a website. It can be a person or a body of the chapter, such as the Steering Committee. Make the profile once, then credit it on any article from that article’s Bylines panel.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b5t",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s5u",
+                      "text": "Credits show under the headline and on the News page. Any byline with a bio or a picture also gets a short introduction at the end of the article. An article can carry several, each with a role if it helps: Photographer, Translator, Editor.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b5v",
+                  "style": "h2",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s5w",
+                      "text": "The call to action",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b5x",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s5y",
+                      "text": "Each article ends with a red band. Give it a heading, a sentence or two, and up to two buttons, and it becomes this article’s own ask: sign the petition the statement is about, come to the meeting where the resolution will be voted on, read the full document on another site. A button can point anywhere, on this site or off it.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b5z",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s60",
+                      "text": "Leave the heading blank and the article ends with the same Get involved band as every other page.",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b61",
+                  "style": "h2",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s62",
+                      "text": "Before you publish",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "_type": "block",
+                  "_key": "b63",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s64",
+                      "text": "Read the summary on its own. Would it make sense in a search result?",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b65",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s66",
+                      "text": "Check the table of contents. If a heading there wouldn’t help a reader find their way, it should be bold text instead.",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b67",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s68",
+                      "text": "Open the preview on a phone.",
+                      "marks": []
+                    }
+                  ],
+                  "listItem": "bullet",
+                  "level": 1
+                },
+                {
+                  "_type": "block",
+                  "_key": "b69",
+                  "style": "normal",
+                  "markDefs": [],
+                  "children": [
+                    {
+                      "_type": "span",
+                      "_key": "s6a",
+                      "text": "This page is a sample. Once the first real article is up, delete it from News.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "cta_eyebrow": "Your Turn",
+          "cta_heading": "Have Something the Chapter Should Publish?",
+          "cta_text": [
+            {
+              "_type": "block",
+              "_key": "b6b",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "s6c",
+                  "text": "Statements and resolutions go through the membership. Essays, reports and event write-ups go through the Communications and Design Committee. Tell us what you’re working on.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "cta_buttons": [
+            {
+              "label": "Get Involved",
+              "url": "https://fortworthdsa.solidarity.tech/get-involved-with-dsa-fort-worth",
+              "style": "primary"
+            },
+            {
+              "label": "See How We Decide",
+              "url": "/about-us#how-our-chapter-works",
+              "style": "secondary"
             }
           ]
         }

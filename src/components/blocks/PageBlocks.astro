@@ -15,6 +15,7 @@ import Contact from "./Contact.astro";
 import Notice from "./Notice.astro";
 import EmbedForm from "./EmbedForm.astro";
 import Logos from "./Logos.astro";
+import NewsList from "./NewsList.astro";
 import FinalCta from "./FinalCta.astro";
 import UnknownBlock from "./UnknownBlock.astro";
 
@@ -23,7 +24,7 @@ interface Props {
   edit?: Record<string, string>; // visual-editing attributes for the content field
 }
 const { blocks = [], edit } = Astro.props;
-const renderers: Record<string, any> = { split: Split, callout: Callout, events: Events, featured_events: FeaturedEvents, event_list: EventList, cards: Cards, groups: Groups, checklist: Checklist, faq: Faq, text: Text, gallery: Gallery, contact: Contact, notice: Notice, embed_form: EmbedForm, logos: Logos, final_cta: FinalCta };
+const renderers: Record<string, any> = { split: Split, callout: Callout, events: Events, featured_events: FeaturedEvents, event_list: EventList, cards: Cards, groups: Groups, checklist: Checklist, faq: Faq, text: Text, gallery: Gallery, contact: Contact, notice: Notice, embed_form: EmbedForm, logos: Logos, news_list: NewsList, final_cta: FinalCta };
 ---
 
 <div {...edit} style="display:contents">
