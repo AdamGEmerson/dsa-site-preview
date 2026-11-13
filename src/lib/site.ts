@@ -71,11 +71,13 @@ export type PageSeo = { title: string; description?: string; canonical: string; 
  * SEO for a content page through EmDash: the entry's SEO panel (title, description, image, canonical,
  * "Hide from search engines"), falling back to the H1 and subtitle (an article's headline and
  * summary). Pages read "{page} | DSA Fort Worth"; the homepage leads with the chapter name:
- * "DSA Fort Worth | {panel title}".
+ * "DSA Fort Worth | {panel title}". The share image is the SEO panel's, else `shareImage` (a News
+ * article's hero photo), else the site-wide default.
  */
-export async function seoFor(Astro: Astro, entry: Entry, path: string): Promise<PageSeo> {
+export async function seoFor(Astro: Astro, entry: Entry, path: string, shareImage?: MediaRef | null): Promise<PageSeo> {
   const { siteTitle, separator, siteUrl } = await useSettings(Astro);
   const isHome = path === "/";
+  const fallbackImage = mediaUrl(Astro, shareImage, siteUrl) ?? `${siteUrl}/og-default.png`;
   const seo = getSeoMeta(entry as any, {
     siteTitle: isHome ? undefined : siteTitle,
     titleSeparator: separator,
@@ -83,15 +85,27 @@ export async function seoFor(Astro: Astro, entry: Entry, path: string): Promise<
     path,
     defaultTitle: entry.data.h1 || entry.data.title || undefined,
     defaultDescription: entry.data.lead || entry.data.summary || undefined,
-    defaultOgImage: `${siteUrl}/og-default.png`,
+    defaultOgImage: fallbackImage,
   });
   return {
     title: isHome ? `${siteTitle}${separator}${seo.title}` : seo.title,
     description: seo.description ?? undefined,
     canonical: seo.canonical ?? `${siteUrl}${path}`,
-    image: seo.ogImage ?? `${siteUrl}/og-default.png`,
+    image: seo.ogImage ?? fallbackImage,
     robots: seo.robots ?? undefined,
   };
+}
+
+type MediaRef = { id?: string; src?: string; meta?: { storageKey?: string } };
+
+/** The full address of an uploaded image's original file, as EmDash builds it for an SEO panel
+ *  image: through the media storage's public URL when it has one, otherwise the site's file route. */
+function mediaUrl(Astro: Astro, image: MediaRef | null | undefined, siteUrl: string): string | undefined {
+  if (!image?.id) return undefined;
+  const key = image.meta?.storageKey;
+  const resolve = (Astro.locals as { emdash?: { getPublicMediaUrl?: (key: string) => string } }).emdash?.getPublicMediaUrl;
+  const url = (key && resolve?.(key)) || image.src || `/_emdash/api/media/file/${key || image.id}`;
+  return /^(https?:)?\/\//.test(url) ? url : `${siteUrl}${url.startsWith("/") ? "" : "/"}${url}`;
 }
 
 /** Upcoming events from the calendar feed in Chapter details, categorised, once per request. */

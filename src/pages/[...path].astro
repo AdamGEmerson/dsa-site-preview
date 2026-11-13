@@ -16,8 +16,9 @@ const found = await resolveEmDashPath(path);
 if (!found) return Astro.rewrite("/404");
 const entry = found.entry as unknown as Entry;
 const d = entry.data;
-const seo = await seoFor(Astro, entry, path);
 const isArticle = found.collection === "news";
+// An article's hero photo is also its picture in link previews
+const seo = await seoFor(Astro, entry, path, isArticle ? d.hero_image : null);
 ---
 
 <Base {...seo} content={{ collection: found.collection, id: d.id, slug: d.slug }} schema={isArticle ? [] : [faqPage(d.content)]} article={isArticle ? articleMeta(d) : undefined}>
